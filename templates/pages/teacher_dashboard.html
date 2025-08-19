@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-stats {
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: transform 0.2s ease;
+    }
+    .card-stats:hover { transform: translateY(-5px); }
+    .card-stats h3 { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
+    .card-stats p { font-size: 14px; letter-spacing: 0.5px; margin: 0; opacity: 0.9; }
+    .table thead th { background: #f8f9fc; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+    .table tbody tr:hover { background: #f1f5ff; }
+    .card-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #4e73df; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-title">My Dashboard</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-sm-6">
+        <div class="card-stats">
+            <h3>{{ total_courses_count }}</h3>
+            <p>Courses I Teach</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #1cc88a, #17a673);">
+            <h3>{{ total_students_count }}</h3>
+            <p>Total Students</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #f6c23e, #dda20a);">
+            <h3>{{ total_lessons_count }}</h3>
+            <p>Total Lessons</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <!-- My Courses -->
+    <div class="col-12">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h4 class="card-title">My Courses</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Title</th>
+                                <th>Description</th>
+                                {% comment %} <th>Total Students</th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in my_courses %}
+                            <tr>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.description|default:"N/A" }}</td>
+                                {% comment %} <td>{{ course.students.count }}</td> {% endcomment %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No courses yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Students -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">My Students</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                {% comment %} <th>Courses Enrolled</th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in my_students %}
+                            <tr>
+                                <td>{{ student.name }}</td>
+                                <td>{{ student.email }}</td>
+                                {% comment %} <td>
+                                    {% for c in student.courses.all %}
+                                        {% if c in my_courses %}
+                                            {{ c.title }}{% if not forloop.last %}, {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td> {% endcomment %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No students yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <!-- Recent Lessons -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Recent Lessons</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Lesson Title</th>
+                                <th>Course</th>
+                                <th>Students</th>
+                                <th>Created On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lesson in recent_lessons %}
+                            <tr>
+                                <td>{{ lesson.title }}</td>
+                                <td>
+                                    {% if lesson.course %}
+                                        {{ lesson.course.title }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if lesson.students.exists %}
+                                        {% for s in lesson.students.all %}
+                                            {{ s.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        All Enrolled Students
+                                    {% endif %}
+                                </td>
+                                <td>{{ lesson.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No lessons yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

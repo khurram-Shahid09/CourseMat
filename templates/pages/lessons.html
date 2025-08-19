@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+
+{% block title %}Lessons{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Card styling */
+.lesson-card {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+/* Title styling */
+.lesson-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Content styling */
+.lesson-content {
+    max-height: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    line-height: 1.5;
+    color: #1f1e1eff;
+    transition: max-height 0.3s ease;
+
+}
+.lesson-content.expanded {
+    max-height: none;
+}
+
+/* Badge styling */
+.badge-course {
+    background-color: #0d6efd;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+.badge-student {
+    background-color: #6c757d;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+
+/* Meta information */
+.lesson-meta {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Filter form */
+.forms-sample .form-group label {
+    font-weight: 600;
+    color: #333;
+}
+.forms-sample .btn {
+    min-width: 100px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h3 class="page-title">Lessons</h3>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-6">
+    <form method="get" class="forms-sample">
+      <div class="form-group">
+        {{ form.course.label_tag }} 
+        {{ form.course}}
+      </div>
+
+      {% if request.user.profile.role != 'student' %}
+        <div class="form-group">
+          {{ form.student.label_tag }} 
+          {{ form.student }}
+        </div>
+      {% else %}
+        <input type="hidden" name="student" value="{{ request.user.student.id }}">
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary mt-2">Filter</button>
+      <a href="{% url 'lesson_list' %}" class="btn btn-light mt-2">Reset</a>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    {% if lessons %}
+      {% for lesson in lessons %}
+        <div class="lesson-card">
+          <div class="lesson-title">{{ lesson.title }}</div>
+          <div class="lesson-content" title="{{ lesson.content }}">
+            {{ lesson.content }}
+          </div>
+          <div class="lesson-meta">
+            {% if lesson.course %}
+              <span class="badge-course">{{ lesson.course.title }}</span>
+            {% endif %}
+            <span>By {{ lesson.teacher.name }}</span>
+            <span>
+              {% if lesson.students.exists %}
+                {% for s in lesson.students.all %}
+                  <span class="badge-student">{{ s.name }}</span>
+                {% endfor %}
+              {% else %}
+                <span class="badge-student">All Enrolled Students</span>
+              {% endif %}
+            </span>
+            <span>{{ lesson.created_at|date:"Y-m-d H:i" }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-muted">No lessons found.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.lesson-content').forEach(function(el) {
+        el.addEventListener('click', function() {
+            el.classList.toggle('expanded');
+        });
+    });
+});
+</script>
+{% endblock %}

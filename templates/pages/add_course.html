@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}
+Add Course 
+{% endblock %}
+{% block extra_css %}
+<style>
+  /* Change all labels in the form */
+  .forms-sample label {
+    color: #000000ff; /* red color for labels */
+    font-weight: bold;
+  }
+
+  /* Change the placeholder color for input fields */
+  .forms-sample input::placeholder {
+    color: #888888;
+    font-style: italic;
+  }
+
+  /* Optional: make a specific field label red (e.g., "Name") */
+  .forms-sample label[for="id_name"] {
+    color: #000000ff; /* blue for Name label */
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3 class="page-title">Add Course</h3>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Forms</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Add Course</li>
+    </ol>
+  </nav>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Course Form</h4>
+        <p class="card-description">Fill out the course details</p>
+
+        <form class="forms-sample" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{ form.title }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.fees.id_for_label }}">Fees</label>
+            {{ form.fees }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.duration.id_for_label }}">Duration</label>
+            {{ form.duration }}
+          </div>
+
+
+          <div class="form-group">
+            <label for="{{ form.level.id_for_label }}">Level</label>
+            {{ form.level }}
+          </div>
+
+          <button type="submit" class="btn btn-primary mr-2">Save</button>
+          <a href="{% url 'course_list' %}" class="btn btn-light"
+            >Back to list</a
+          >
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

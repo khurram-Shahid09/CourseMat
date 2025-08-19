@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}
+Students List
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}">
+<style>
+.table td, .table th {
+  vertical-align: middle;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.btn-action {
+  margin-right: 5px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h3 class="page-title">Students</h3>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Tables</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Students List</li>
+    </ol>
+  </nav>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <a href="{% url 'student_create' %}" class="btn btn-primary mb-3">Add New Student</a>
+
+        {% if students %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-wrap">
+            <thead class="thead-light">
+              <tr>
+                <th>Roll Number</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Date of Birth</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+              <tr>
+                <td>{{ student.roll_number }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.age }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.phone_number|default:"-" }}</td>
+                <td>{{ student.date_of_birth|date:"d M Y"|default:"-" }}</td>
+                <td>
+                  <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-warning btn-action">Edit</a>
+                  <form action="{% url 'student_delete' student.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete {{ student.name }}?');">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p>No students found.</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

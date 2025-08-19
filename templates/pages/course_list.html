@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}
+Courses List
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}">
+
+<style>
+  /* Table container with horizontal scroll */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fixed table layout for consistent column widths */
+  .table {
+    table-layout: auto;
+    width: 100%;
+    min-width: 900px; /* Minimum width before scrolling */
+  }
+  
+  /* Cell styling */
+  .table th, .table td {
+    vertical-align: top;
+    padding: 12px 8px;
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Description column with full text display */
+  .description-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  
+  /* Column width distribution */
+  .table th:nth-child(1), .table td:nth-child(1) { width: 100px; } /* Course Code */
+  .table th:nth-child(2), .table td:nth-child(2) { width: 150px; } /* Title */
+  .table th:nth-child(3), .table td:nth-child(3) { min-width: 200px; } /* Description */
+  .table th:nth-child(4), .table td:nth-child(4) { width: 80px; }  /* Fees */
+  .table th:nth-child(5), .table td:nth-child(5) { width: 100px; } /* Duration */
+  .table th:nth-child(6), .table td:nth-child(6) { width: 100px; } /* Level */
+  .table th:nth-child(7), .table td:nth-child(7) { width: 80px; }  /* Status */
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .table {
+      min-width: 600px; /* Adjusted for smaller screens */
+    }
+    
+    .table th, .table td {
+      padding: 8px 6px;
+      font-size: 14px;
+    }
+    
+    .description-cell {
+      max-width: 150px;
+      min-width: 150px;
+    }
+    
+    .btn {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .table {
+      min-width: 400px; /* Further reduced for very small screens */
+    }
+    
+    .table th, .table td {
+      padding: 6px 4px;
+      font-size: 12px;
+    }
+    
+    .description-cell {
+      max-width: 100px;
+      min-width: 100px;
+    }
+    
+    .btn {
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h3 class="page-title">Courses</h3>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Tables</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Courses List</li>
+    </ol>
+  </nav>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+         {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+  <a href="{% url 'add_course' %}" class="btn btn-primary mb-3">Add New Course</a>
+  {% endif %}
+
+        {% if courses %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>Course Code</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Fees</th>
+                <th>Duration</th>
+                <th>Level</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for course in courses %}
+              <tr>
+                <td>{{ course.course_code }}</td>
+                <td>{{ course.title }}</td>
+                <td class="description-cell">{{ course.description }}</td>
+                <td>${{ course.fees }}</td>
+                <td>{{ course.duration }} weeks</td>
+                <td>{{ course.level|title }}</td>
+                <td>
+                  {% if course.end_date and course.end_date < today %}
+                    <span class="badge badge-danger">Closed</span>
+                  {% else %}
+                    <span class="badge badge-success">Open</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No courses found.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

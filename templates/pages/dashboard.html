@@ -1,0 +1,172 @@
+{% extends "layout.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-stats {
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: transform 0.2s ease;
+    }
+    .card-stats:hover { transform: translateY(-5px); }
+    .card-stats h3 { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
+    .card-stats p { font-size: 14px; letter-spacing: 0.5px; margin: 0; opacity: 0.9; }
+    .table thead th { background: #f8f9fc; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+    .table tbody tr:hover { background: #f1f5ff; }
+    .card-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #4e73df; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-title">Overview Dashboard</h3>
+</div>
+
+<div class="row">
+    <!-- Students Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card-stats">
+            <h3>{{ students_count }}</h3>
+            <p>Students</p>
+        </div>
+    </div>
+
+    <!-- Courses Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #1cc88a, #17a673);">
+            <h3>{{ courses_count }}</h3>
+            <p>Courses</p>
+        </div>
+    </div>
+
+    <!-- Enrollments Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #f6c23e, #dda20a);">
+            <h3>{{ enrollments_count }}</h3>
+            <p>Enrollments</p>
+        </div>
+    </div>
+
+    <!-- Teachers Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #e74a3b, #be2617);">
+            <h3>{{ teachers_count }}</h3>
+            <p>Teachers</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Enrollments -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Recent Enrollments</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Enrollment ID</th>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Status</th>
+                                <th>Enrolled On</th>
+                                <th>Start Date</th>
+                                <th>Paid Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in recent_enrollments %}
+                            <tr>
+                                <td>{{ enrollment.roll_number }}</td>
+                                <td>{{ enrollment.student.name }}</td>
+                                <td>{{ enrollment.course.title }}</td>
+                                <td>{{ enrollment.status }}</td>
+                                <td>{{ enrollment.enrolled_on|date:"M d, Y" }}</td>
+                                <td>{{ enrollment.start_date|date:"M d, Y" }}</td>
+                                <td>${{ enrollment.fee_at_enrollment }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No recent enrollments</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Courses -->
+    <div class="col-md-6 mt-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Top Courses</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Enrollments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in top_courses %}
+                            <tr>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.enrollments_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">No course data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Teachers -->
+    <div class="col-md-6 mt-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Top Teachers</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Number of Courses</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for teacher in top_teachers %}
+                            <tr>
+                                <td>{{ teacher.name }}</td>
+                                <td>{{ teacher.courses_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">No teacher data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

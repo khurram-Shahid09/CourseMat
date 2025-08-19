@@ -1,0 +1,309 @@
+{% extends "layout.html" %}
+
+{% block title %}Send Lesson{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Base styles */
+.forms-sample label {
+    color: #2d3748;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.forms-sample input,
+.forms-sample textarea,
+.forms-sample select {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.forms-sample input:focus,
+.forms-sample textarea:focus,
+.forms-sample select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    background-color: #ffffff;
+    outline: none;
+}
+
+.forms-sample textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+.text-danger {
+    font-size: 0.85rem;
+    margin-top: 6px;
+    color: #ef4444;
+}
+
+.btn-primary {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-body {
+    padding: 2.5rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+}
+
+/* Students container */
+#students-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px;
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    margin-top: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#students-container label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #f8fafc;
+}
+
+#students-container label:hover {
+    background-color: #f1f5f9;
+    transform: translateX(2px);
+}
+
+#students-container input[type="checkbox"] {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    accent-color: #6366f1;
+}
+
+/* Send all checkbox */
+.send-all-container {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    background-color: #f1f5f9;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.send-all-container input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #6366f1;
+}
+
+.send-all-container label {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .forms-sample input,
+    .forms-sample textarea,
+    .forms-sample select {
+        padding: 10px 14px;
+    }
+}
+
+/* Scrollbar styling for students container */
+#students-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#students-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+#students-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+#students-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Loading state */
+.loading-students {
+    color: #64748b;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h3 class="page-title">Send Lesson</h3>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6 col-sm-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <form class="forms-sample" method="post">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Lesson Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+              <div class="text-danger">{{ form.title.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">Lesson Content</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+              <div class="text-danger">{{ form.content.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.course.id_for_label }}">Course</label>
+            {{ form.course }}
+            {% if form.course.errors %}
+              <div class="text-danger">{{ form.course.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <div class="send-all-container">
+                <input type="checkbox" id="send_all_students"> 
+                <label for="send_all_students">Send to All Students in Course</label>
+            </div>
+            <label>Select Students</label>
+            <div id="students-container">
+                <div class="loading-students">Please select a course to view students</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="mdi mdi-send mr-2"></i> Send Lesson
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function loadStudents(course_id) {
+        var container = $('#students-container');
+        container.html('<div class="loading-students">Loading students...</div>');
+
+        if(course_id) {
+            $.ajax({
+                url: "{% url 'get_course_students' %}",
+                data: { 'course_id': course_id },
+                dataType: 'json',
+                success: function(data) {
+                    if(data.students.length === 0) {
+                        container.html('<div class="loading-students">No students enrolled in this course</div>');
+                    } else {
+                        container.empty();
+                        data.students.forEach(function(student) {
+                            var checkbox = $('<input type="checkbox" class="student-checkbox">')
+                                .val(student.id)
+                                .attr('id', 'student_' + student.id)
+                                .attr('name', 'students');
+                            var label = $('<label></label>')
+                                .attr('for', 'student_' + student.id)
+                                .append(checkbox)
+                                .append(document.createTextNode(student.name));
+                            container.append(label);
+                        });
+                    }
+                },
+                error: function() {
+                    container.html('<div class="loading-students">Error loading students</div>');
+                }
+            });
+        } else {
+            container.html('<div class="loading-students">Please select a course to view students</div>');
+        }
+    }
+
+    $('#id_course').change(function() {
+        var course_id = $(this).val();
+        loadStudents(course_id);
+        $('#send_all_students').prop('checked', false);
+    });
+
+    $('#send_all_students').change(function() {
+        var checked = $(this).is(':checked');
+        $('#students-container input.student-checkbox').prop('checked', checked);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Enrollments List</title>
+  </head>
+  <body>
+    <h1>Enrollments List</h1>
+
+    <p><a href="{% url 'enrollment_create' %}">Add New Enrollment</a></p>
+
+    {% if enrollments %}
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Course</th>
+          <th>Enrolled On</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for enrollment in enrollments %}
+        <tr>
+          <td>{{ enrollment.student.name }}</td>
+          <td>{{ enrollment.course.title }}</td>
+          <td>{{ enrollment.enrolled_on }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No enrollments found.</p>
+    {% endif %}
+  </body>
+</html>

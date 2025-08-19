@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Courses List</title>
+  </head>
+  <body>
+    <h1>Courses List</h1>
+
+    <p><a href="{% url 'course_create' %}">Add New Course</a></p>
+
+    {% if courses %}
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <td>{{ course.title }}</td>
+          <td>{{ course.description }}</td>
+          <td>${{ course.fees }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No courses found.</p>
+    {% endif %}
+  </body>
+</html>
