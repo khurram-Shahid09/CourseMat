@@ -234,27 +234,56 @@ def student_delete(request, pk):
         return redirect('student_list')
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
+@login_required
 def send_lesson(request):
-    try:
-        teacher = request.user.teacher_profile
-    except Teacher.DoesNotExist:
-        return HttpResponse("You are not a teacher", status=403)
+    user = request.user
+
+    # Determine teacher if user is a teacher
+    teacher = None
+    if hasattr(user, 'teacher_profile'):
+        teacher = user.teacher_profile
+
+    # Admin can send lesson too
+    is_admin = user.profile.role == 'admin'
 
     if request.method == "POST":
-        form = LessonForm(request.POST, teacher=teacher)
+        # Pass teacher only if teacher is sending
+        form = LessonForm(request.POST, teacher=teacher if teacher else None)
         course_id = request.POST.get('course')
 
         if course_id:
+            # Show only enrolled students for the selected course
             form.fields['students'].queryset = Student.objects.filter(enrollments__course_id=course_id)
 
         if form.is_valid():
             lesson = form.save(commit=False)
-            lesson.teacher = teacher
+            if teacher:
+                lesson.teacher = teacher  # teacher assigned
+            elif is_admin:
+                # Admin has to select a teacher from form if needed
+                selected_teacher_id = form.cleaned_data.get('teacher')
+                if selected_teacher_id:
+                    lesson.teacher = Teacher.objects.get(id=selected_teacher_id)
             lesson.save()
             form.save_m2m()
             return redirect("send-lesson")
     else:
-        form = LessonForm(teacher=teacher)
+        form = LessonForm(teacher=teacher if teacher else None)
+
+        # If admin, show all courses and all students in dropdown
+        if is_admin:
+            form.fields['course'].queryset = Course.objects.all()
+            form.fields['students'].queryset = Student.objects.all()
+            # Optional: let admin select teacher if lesson.teacher is required
+            form.fields['teacher'] = forms.ModelChoiceField(
+                queryset=Teacher.objects.all(),
+                required=False,
+                label="Assign Teacher",
+                widget=forms.Select(attrs={'class': 'form-control'})
+            )
+        elif teacher:
+            # Teacher: only show their courses
+            form.fields['course'].queryset = teacher.courses.all()
 
     return render(request, "pages/send_lesson.html", {"form": form})
 
@@ -265,31 +294,51 @@ def lesson_list(request):
 
     if request.user.profile.role == 'student':
         student = Student.objects.get(user=request.user)
-
-        # Only courses where student is enrolled
         enrolled_courses = Enrollment.objects.filter(student=student).values_list('course', flat=True)
 
-        # Restrict course dropdown
+        # Limit courses dropdown only to student’s enrolled courses
         form.fields['course'].queryset = Course.objects.filter(id__in=enrolled_courses)
 
-        # Hide student field
+        # Hide student field completely (we already know who they are)
         form.fields['student'].widget = forms.HiddenInput()
         form.fields['student'].initial = student.id
 
-        # Lessons for the student
         lessons = Lesson.objects.filter(
             Q(course__in=enrolled_courses),
-            Q(students=student) | Q(students__isnull=True)
+            Q(students=student) | Q(students__isnull=True)   # lessons for this student OR for all
         ).distinct().order_by('-created_at')
 
-    else:
-        # Admin/teacher: full functionality
-        lessons = Lesson.objects.all().order_by('-created_at')
+        # Apply extra filter only for course (student is fixed)
+        if form.is_valid():
+            course = form.cleaned_data.get('course')
+            if course:
+                lessons = lessons.filter(course=course)
+
+    elif request.user.profile.role == 'teacher':
+        teacher = Teacher.objects.get(user=request.user)
+        courses_taught = teacher.courses.all()
+
+        form.fields['course'].queryset = courses_taught
+        enrolled_students = Student.objects.filter(
+            enrollments__course__in=courses_taught
+        ).distinct()
+        form.fields['student'].queryset = enrolled_students
+
+        lessons = Lesson.objects.filter(course__in=courses_taught).order_by('-created_at')
 
         if form.is_valid():
             course = form.cleaned_data.get('course')
             student = form.cleaned_data.get('student')
+            if course:
+                lessons = lessons.filter(course=course)
+            if student:
+                lessons = lessons.filter(Q(students=student) | Q(students__isnull=True)).distinct()
 
+    else:  # Admin
+        lessons = Lesson.objects.all().order_by('-created_at')
+        if form.is_valid():
+            course = form.cleaned_data.get('course')
+            student = form.cleaned_data.get('student')
             if course:
                 lessons = lessons.filter(course=course)
             if student:
@@ -300,6 +349,9 @@ def lesson_list(request):
         'lessons': lessons
     }
     return render(request, 'pages/lessons.html', context)
+
+
+
 
 @login_required
 def teacher_dashboard(request):
@@ -325,7 +377,7 @@ def teacher_dashboard(request):
         'my_courses': courses,       # Courses taught by this teacher
         'my_students': students,     # Students enrolled in their courses
     }
-    print(total_students_count)
+    print(students)
     return render(request, 'pages/teacher_dashboard.html', context)
 
 

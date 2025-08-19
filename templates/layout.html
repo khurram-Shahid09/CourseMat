@@ -538,7 +538,7 @@
               </div>
             </li>
             {% endif %}
-            {% if request.user.profile.role in 'student teacher' or request.user.is_superuser %}
+            {% if request.user.profile.role in 'student teacher' %}
 <li class="nav-item">
   <a class="nav-link" href="{% url 'course_list' %}">
     <span class="icon-bg"><i class="mdi mdi-book-open-page-variant menu-icon"></i></span>

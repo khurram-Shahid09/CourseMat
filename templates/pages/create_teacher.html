@@ -65,11 +65,15 @@
             {% if form.specialization.errors %}<div class="text-danger">{{ form.specialization.errors }}</div>{% endif %}
           </div>
 
-          <div class="form-group">
-            <label for="{{ form.courses.id_for_label }}">Courses</label>
-            {{ form.courses }}
-            {% if form.courses.errors %}<div class="text-danger">{{ form.courses.errors }}</div>{% endif %}
-          </div>
+         <div class="form-group">
+  <label for="{{ form.courses.id_for_label }}">Courses</label>
+  <div>
+    {{ form.courses }}
+  </div>
+  {% if form.courses.errors %}
+    <div class="text-danger">{{ form.courses.errors }}</div>
+  {% endif %}
+</div>
 
           <button type="submit" class="btn btn-primary mr-2">{% if edit %}Update{% else %}Save{% endif %}</button>
           <a href="{% url 'teacher_list' %}" class="btn btn-light">Back to list</a>

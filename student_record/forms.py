@@ -75,14 +75,17 @@ class TeacherForm(forms.ModelForm):
     class Meta:
         model = Teacher
         fields = ['name', 'email', 'phone', 'specialization', 'courses']
+        widgets = {
+            'courses': forms.CheckboxSelectMultiple(),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Apply Bootstrap class to all fields
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
-        # For ManyToManyField 'courses', just update attrs (don't replace widget!)
-        self.fields['courses'].widget.attrs.update({'class': 'form-control'})
+        for name, field in self.fields.items():
+            if name != 'courses': 
+                field.widget.attrs.update({'class': 'form-control'})
+
+
 
 
 class LessonFilterForm(forms.Form):
@@ -123,12 +126,17 @@ class LessonForm(forms.ModelForm):
         model = Lesson
         fields = ['title', 'content', 'course', 'teacher', 'students']
 
-    def __init__(self, *args, **kwargs):
-        teacher = kwargs.pop('teacher', None)
-        super().__init__(*args, **kwargs)
+def __init__(self, *args, **kwargs):
+    teacher = kwargs.pop('teacher', None)
+    super().__init__(*args, **kwargs)
 
-        if teacher:
-            self.fields['course'].queryset = teacher.courses.all()
-            self.fields['teacher'].queryset = Teacher.objects.filter(id=teacher.id)
-            self.fields['teacher'].initial = teacher.id
+    if teacher:
+        self.fields['course'].queryset = teacher.courses.all()
+        self.fields['teacher'].queryset = Teacher.objects.filter(id=teacher.id)
+        self.fields['teacher'].initial = teacher.id
+        self.fields['teacher'].disabled = True
+    else:
+        self.fields['course'].queryset = Course.objects.all()
+        self.fields['teacher'].queryset = Teacher.objects.all()
+        self.fields['teacher'].required = False
 

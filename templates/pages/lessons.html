@@ -87,27 +87,31 @@
 </div>
 
 <div class="row justify-content-center mb-4">
-  <div class="col-md-6">
-    <form method="get" class="forms-sample">
-      <div class="form-group">
+  <div class="col-12">
+    <form method="get" class="forms-sample row g-2 align-items-end">
+      <div class="col-auto">
         {{ form.course.label_tag }} 
-        {{ form.course}}
+        {{ form.course }}
       </div>
 
-      {% if request.user.profile.role != 'student' %}
-        <div class="form-group">
-          {{ form.student.label_tag }} 
-          {{ form.student }}
-        </div>
-      {% else %}
-        <input type="hidden" name="student" value="{{ request.user.student.id }}">
-      {% endif %}
+    <div class="col-auto">
+  {{ form.student.label_tag }}
+  {% if request.user.profile.role == 'student' %}
+    <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled>
+    <input type="hidden" name="student" value="{{ request.user.student.id }}">
+  {% else %}
+    {{ form.student }}
+  {% endif %}
+</div>
 
-      <button type="submit" class="btn btn-primary mt-2">Filter</button>
-      <a href="{% url 'lesson_list' %}" class="btn btn-light mt-2">Reset</a>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'lesson_list' %}" class="btn btn-light btn-sm">Reset</a>
+      </div>
     </form>
   </div>
 </div>
+
 
 <div class="row">
   <div class="col-12">
