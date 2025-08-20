@@ -19,6 +19,8 @@ urlpatterns = [
     path("teacher/delete/<int:pk>/", views.teacher_delete, name="teacher_delete"),
     path("send-lesson/", views.send_lesson, name="send-lesson"),
     path('lessons/', views.lesson_list, name='lesson_list'),
+    path('lesson/<int:pk>/update/', views.lesson_update, name='lesson_update'),
+    path('lesson/<int:pk>/delete/', views.lesson_delete, name='lesson_delete'),
     # urls.py
     path('ajax/get-course-students/', views.get_course_students, name='get_course_students'),
     path('ajax/get-course-teachers/', views.get_course_teachers, name='get_course_teachers'),

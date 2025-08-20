@@ -4,79 +4,108 @@
 
 {% block extra_css %}
 <style>
-/* Card styling */
 .lesson-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 15px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     background: #ffffff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 .lesson-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
 }
-
-/* Title styling */
 .lesson-title {
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
     margin-bottom: 10px;
-    color: #333;
+    color: #0d47a1;
 }
-
-/* Content styling */
 .lesson-content {
-    max-height: 200px;
+    max-height: 150px;
     overflow: hidden;
-    text-overflow: ellipsis;
     cursor: pointer;
     line-height: 1.5;
-    color: #1f1e1eff;
-    transition: max-height 0.3s ease;
-
+    color: #2c3e50;
+    transition: max-height 0.4s ease;
 }
 .lesson-content.expanded {
     max-height: none;
 }
-
-/* Badge styling */
-.badge-course {
-    background-color: #0d6efd;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
-    margin-right: 5px;
-    border-radius: 6px;
-}
-.badge-student {
-    background-color: #6c757d;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
-    margin-right: 5px;
-    border-radius: 6px;
-}
-
-/* Meta information */
-.lesson-meta {
-    font-size: 0.8rem;
-    color: #777;
-    margin-top: 12px;
+.lesson-images {
+    margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
 }
-
-/* Filter form */
+.lesson-images img {
+    border-radius: 10px;
+    max-height: 140px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.lesson-images img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.lesson-meta-info {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #555;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.lesson-meta-info span {
+    background: #f1f1f1;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+.lesson-card-buttons {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+}
+.lesson-card-buttons a {
+    text-decoration: none;
+}
 .forms-sample .form-group label {
     font-weight: 600;
-    color: #333;
+    color: #222;
 }
 .forms-sample .btn {
-    min-width: 100px;
+    min-width: 110px;
+    font-weight: 600;
+}
+#imageModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+#imageModal img {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+}
+#imageModal .close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
 }
 </style>
 {% endblock %}
@@ -93,17 +122,15 @@
         {{ form.course.label_tag }} 
         {{ form.course }}
       </div>
-
-    <div class="col-auto">
-  {{ form.student.label_tag }}
-  {% if request.user.profile.role == 'student' %}
-    <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled>
-    <input type="hidden" name="student" value="{{ request.user.student.id }}">
-  {% else %}
-    {{ form.student }}
-  {% endif %}
-</div>
-
+      <div class="col-auto">
+        {{ form.student.label_tag }}
+        {% if request.user.profile.role == 'student' %}
+          <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled>
+          <input type="hidden" name="student" value="{{ request.user.student.id }}">
+        {% else %}
+          {{ form.student }}
+        {% endif %}
+      </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
         <a href="{% url 'lesson_list' %}" class="btn btn-light btn-sm">Reset</a>
@@ -112,45 +139,59 @@
   </div>
 </div>
 
-
 <div class="row">
   <div class="col-12">
     {% if lessons %}
       {% for lesson in lessons %}
         <div class="lesson-card">
           <div class="lesson-title">{{ lesson.title }}</div>
-          <div class="lesson-content" title="{{ lesson.content }}">
-            {{ lesson.content }}
-          </div>
-          <div class="lesson-meta">
-            {% if lesson.course %}
-              <span class="badge-course">{{ lesson.course.title }}</span>
-            {% endif %}
-            <span>
-  By 
-  {% if lesson.teacher %}
-    {{ lesson.teacher.name }}
-  {% else %}
-    Admin
-  {% endif %}
-</span>
-            <span>
-              {% if lesson.students.exists %}
-                {% for s in lesson.students.all %}
-                  <span class="badge-student">{{ s.name }}</span>
-                {% endfor %}
-              {% else %}
-                <span class="badge-student">All Enrolled Students</span>
+          <div class="lesson-content" title="{{ lesson.content }}">{{ lesson.content }}</div>
+
+          {% if lesson.images.exists %}
+          <div class="lesson-images">
+            {% for img in lesson.images.all %}
+              {% if img.image %}
+                <img src="{{ img.image.url }}" alt="Lesson Image" class="lesson-img">
               {% endif %}
-            </span>
-            <span>{{ lesson.created_at|date:"Y-m-d H:i" }}</span>
+            {% endfor %}
           </div>
+          {% endif %}
+
+          <div class="lesson-meta-info">
+            {% if lesson.course %}<span>Course: {{ lesson.course.title }}</span>{% endif %}
+            <span>By: {% if lesson.teacher %}{{ lesson.teacher.name }}{% else %}Admin{% endif %}</span>
+            {% if lesson.students.exists %}
+              <span>Students: {{ lesson.students.count }}</span>
+            {% else %}
+              <span>All Enrolled Students</span>
+            {% endif %}
+            <span>Created: {{ lesson.created_at|date:"Y-m-d H:i" }}</span>
+          </div>
+
+        {% if request.user.is_superuser or request.user.profile.role in "teacher admin" %}
+  <div class="lesson-card-buttons">
+    <a href="{% url 'lesson_update' lesson.id %}" class="btn btn-sm btn-warning">Update</a>
+
+    <form action="{% url 'lesson_delete' lesson.id %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lesson?');">
+        Delete
+      </button>
+    </form>
+  </div>
+{% endif %}
+
         </div>
       {% endfor %}
     {% else %}
       <p class="text-center text-muted">No lessons found.</p>
     {% endif %}
   </div>
+</div>
+
+<div id="imageModal">
+  <span class="close">&times;</span>
+  <img id="modalImg" src="">
 </div>
 
 <script>
@@ -160,6 +201,29 @@ document.addEventListener("DOMContentLoaded", function() {
             el.classList.toggle('expanded');
         });
     });
+
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const closeBtn = document.querySelector("#imageModal .close");
+
+    document.querySelectorAll(".lesson-images img").forEach(function(img) {
+        img.addEventListener("click", function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        });
+    });
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+        modalImg.src = "";
+    };
+
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            modal.style.display = "none";
+            modalImg.src = "";
+        }
+    };
 });
 </script>
 {% endblock %}

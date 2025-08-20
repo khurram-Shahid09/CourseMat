@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Course, Enrollment, Teacher, Lesson
+from .models import Student, Course, Enrollment, Teacher, Lesson, LessonImage
 from django.core.exceptions import ValidationError
 from .models import Enrollment
 from django.db.models import Count
@@ -139,5 +139,12 @@ class LessonForm(forms.ModelForm):
         else:
             self.fields['course'].queryset = Course.objects.all()
             self.fields['teacher'].queryset = Teacher.objects.all()
+
+
+    class LessonImageForm(forms.ModelForm):
+     class Meta:
+        model = LessonImage
+        fields = ['image']
+
 
 

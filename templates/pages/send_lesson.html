@@ -4,9 +4,10 @@
 
 {% block extra_css %}
 <style>
+
 /* Base styles */
 .forms-sample label {
-    color: #2d3748;
+    color: #2b2323ff;
     font-weight: 600;
     margin-bottom: 8px;
     display: block;
@@ -138,7 +139,7 @@
 .send-all-container label {
     margin-bottom: 0;
     font-weight: 600;
-    color: #334155;
+    color: #000000ff;
     cursor: pointer;
 }
 
@@ -196,19 +197,20 @@
     text-align: center;
     padding: 10px;
 }
+
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h3 class="page-title">Send Lesson</h3>
+  <h3 class="page-title">{% if lesson %}Update{% else %}Send{% endif %} Lesson</h3>
 </div>
 
 <div class="row justify-content-center">
   <div class="col-md-8 col-lg-6 col-sm-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <form class="forms-sample" method="post">
+        <form class="forms-sample" method="post" enctype="multipart/form-data">
           {% csrf_token %}
 
           <div class="form-group">
@@ -246,8 +248,20 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label for="id_images">Upload Images</label>
+            <input type="file" class="form-control-file" name="images" id="id_images" multiple>
+            <div id="image-preview" class="mt-2 d-flex flex-wrap">
+                {% if lesson and lesson.images.exists %}
+                    {% for img in lesson.images.all %}
+                        <img src="{{ img.image.url }}" style="width:80px;height:80px;object-fit:cover;margin:5px;border-radius:5px;">
+                    {% endfor %}
+                {% endif %}
+            </div>
+          </div>
+
           <button type="submit" class="btn btn-primary">
-            <i class="mdi mdi-send mr-2"></i> Send Lesson
+            <i class="mdi mdi-send mr-2"></i> {% if lesson %}Update{% else %}Send{% endif %} Lesson
           </button>
         </form>
       </div>
@@ -258,7 +272,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    function loadStudents(course_id) {
+
+    // Preselected students passed from view
+    var preselectedStudents = {% if selected_students %}{{ selected_students|safe }}{% else %}[] {% endif %};
+
+    function loadStudents(course_id, preselected=[]) {
         var container = $('#students-container');
         container.html('<div class="loading-students">Loading students...</div>');
 
@@ -277,10 +295,16 @@ $(document).ready(function() {
                                 .val(student.id)
                                 .attr('id', 'student_' + student.id)
                                 .attr('name', 'students');
-                            var label = $('<label></label>')
+
+                            if(preselected.includes(student.id)) {
+                                checkbox.prop('checked', true);
+                            }
+
+                            var label = $('<label class="d-block"></label>')
                                 .attr('for', 'student_' + student.id)
                                 .append(checkbox)
-                                .append(document.createTextNode(student.name));
+                                .append(" " + student.name);
+
                             container.append(label);
                         });
                     }
@@ -294,6 +318,11 @@ $(document).ready(function() {
         }
     }
 
+    var initialCourse = $('#id_course').val();
+    if(initialCourse){
+        loadStudents(initialCourse, preselectedStudents);
+    }
+
     $('#id_course').change(function() {
         var course_id = $(this).val();
         loadStudents(course_id);
@@ -303,6 +332,25 @@ $(document).ready(function() {
     $('#send_all_students').change(function() {
         var checked = $(this).is(':checked');
         $('#students-container input.student-checkbox').prop('checked', checked);
+    });
+
+    // Live image preview
+    $('#id_images').on('change', function() {
+        var preview = $('#image-preview');
+        preview.empty();
+        var files = this.files;
+
+        if(files) {
+            $.each(files, function(i, file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = $('<img>').attr('src', e.target.result)
+                                        .css({width: '80px', height: '80px', objectFit: 'cover', margin: '5px', borderRadius: '5px'});
+                    preview.append(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
     });
 });
 </script>

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Count
 from .decorator import role_required
 from .models import Course, Enrollment, Student, Teacher, Lesson, Profile
-from .forms import StudentForm, CourseForm, EnrollmentForm, TeacherForm, LessonForm, LessonFilterForm
+from .forms import StudentForm, CourseForm, EnrollmentForm, TeacherForm, LessonForm, LessonFilterForm, LessonImage
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
@@ -13,7 +13,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from .models import Lesson, Course, Student
 from .forms import LessonFilterForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 
 @role_required('admin')
 def dashboard(request):
@@ -331,6 +331,12 @@ def send_lesson(request):
                 lesson.teacher = None  # Admin sent
             lesson.save()
             form.save_m2m()
+
+            # Handle multiple images
+            images = request.FILES.getlist("images")
+            for img in images:
+                LessonImage.objects.create(lesson=lesson, image=img)
+
             return redirect("send-lesson")
     else:
         form = LessonForm(teacher=teacher if teacher else None)
@@ -344,9 +350,6 @@ def send_lesson(request):
             form.fields['course'].queryset = teacher.courses.all()
 
     return render(request, "pages/send_lesson.html", {"form": form, "is_admin": is_admin})
-
-
-
 
 
 @login_required
@@ -412,6 +415,43 @@ def lesson_list(request):
     return render(request, 'pages/lessons.html', context)
 
 
+def is_teacher_or_admin(user):
+    return user.is_superuser or user.profile.role in ['teacher', 'admin']
+
+@login_required
+@user_passes_test(is_teacher_or_admin)
+# views.py
+def lesson_update(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk)
+
+    if request.method == 'POST':
+        form = LessonForm(request.POST, request.FILES, instance=lesson)
+        if form.is_valid():
+            lesson = form.save()
+            # Save students
+            students_ids = request.POST.getlist('students')
+            lesson.students.set(students_ids)
+            return redirect('lesson_list')
+    else:
+        form = LessonForm(instance=lesson)
+
+    # Pass existing students
+    selected_students = lesson.students.values_list('id', flat=True)
+    return render(request, 'pages/send_lesson.html', {
+        'form': form,
+        'selected_students': list(selected_students),
+        'lesson': lesson
+    })
+
+
+@login_required
+@user_passes_test(is_teacher_or_admin)
+def lesson_delete(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk)
+    if request.method == 'POST':
+        lesson.delete()
+        return redirect('lesson_list')
+    return render(request, 'pages/lessons.html', {'lesson': lesson})
 
 
 @login_required

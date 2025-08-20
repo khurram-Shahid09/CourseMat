@@ -127,13 +127,15 @@ class Lesson(models.Model):
     content = models.TextField()
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE,blank=True, null=True)
     course = models.ForeignKey('Course', on_delete=models.CASCADE, blank=True, null=True)
-    students = models.ManyToManyField('Student', blank=True)  # optional specific students
+    students = models.ManyToManyField('Student', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
-
+class LessonImage(models.Model):
+    lesson = models.ForeignKey(Lesson, related_name="images", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="lesson_images/")
 
 class Profile(models.Model):
     ROLE_CHOICES = (

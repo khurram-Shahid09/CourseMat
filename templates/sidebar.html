@@ -2,98 +2,95 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
     <li class="nav-item nav-category">Main</li>
+
     <!-- Dashboard -->
     <li class="nav-item">
-      <a class="nav-link" 
-         href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}
-               {% elif request.user.profile.role == 'teacher' %}{% url 'teacher_dashboard' %}
-               {% else %}{% url 'dashboard' %}{% endif %}">
+      <a class="nav-link"
+         href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}{% elif request.user.profile.role == 'teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">
         <span class="icon-bg">
           <i class="mdi mdi-view-dashboard menu-icon"></i>
         </span>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
+
     {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
       <!-- Students Menu -->
       <li class="nav-item">
-        <a
-          class="nav-link"
-          data-toggle="collapse"
-          href="#students"
-          aria-expanded="false"
-          aria-controls="students"
-        >
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#students"
+           aria-expanded="{% if request.resolver_match.url_name == 'student_list' or request.resolver_match.url_name == 'basic_elements' %}true{% else %}false{% endif %}"
+           aria-controls="students">
           <span class="icon-bg">
             <i class="mdi mdi-account-multiple menu-icon"></i>
           </span>
           <span class="menu-title">Students</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="students">
+        <div class="collapse {% if request.resolver_match.url_name == 'student_list' or request.resolver_match.url_name == 'basic_elements' %}show{% endif %}" id="students">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'student_list' %}">Student List</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'student_list' %}active{% endif %}" href="{% url 'student_list' %}">Student List</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'basic_elements' %}">Add Student</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'basic_elements' %}active{% endif %}" href="{% url 'basic_elements' %}">Add Student</a>
             </li>
           </ul>
         </div>
       </li>
+
       <!-- Courses Menu -->
       <li class="nav-item">
-        <a
-          class="nav-link"
-          data-toggle="collapse"
-          href="#courses"
-          aria-expanded="false"
-          aria-controls="courses"
-        >
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#courses"
+           aria-expanded="{% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' %}true{% else %}false{% endif %}"
+           aria-controls="courses">
           <span class="icon-bg">
             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
           </span>
           <span class="menu-title">Courses</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="courses">
+        <div class="collapse {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' %}show{% endif %}" id="courses">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'course_list' %}">Course List</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'course_list' %}active{% endif %}" href="{% url 'course_list' %}">Course List</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'add_course' %}">Add Course</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'add_course' %}active{% endif %}" href="{% url 'add_course' %}">Add Course</a>
             </li>
           </ul>
         </div>
       </li>
+
       <!-- Teachers Menu -->
       <li class="nav-item">
-        <a
-          class="nav-link"
-          data-toggle="collapse"
-          href="#teachers"
-          aria-expanded="false"
-          aria-controls="teachers"
-        >
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#teachers"
+           aria-expanded="{% if request.resolver_match.url_name == 'teacher_list' or request.resolver_match.url_name == 'teacher_create' %}true{% else %}false{% endif %}"
+           aria-controls="teachers">
           <span class="icon-bg">
             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
           </span>
           <span class="menu-title">Teachers</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="teachers">
+        <div class="collapse {% if request.resolver_match.url_name == 'teacher_list' or request.resolver_match.url_name == 'teacher_create' %}show{% endif %}" id="teachers">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'teacher_list' %}">Teacher List</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'teacher_list' %}active{% endif %}" href="{% url 'teacher_list' %}">Teacher List</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'teacher_create' %}">Add Teacher</a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'teacher_create' %}active{% endif %}" href="{% url 'teacher_create' %}">Add Teacher</a>
             </li>
           </ul>
         </div>
       </li>
     {% endif %}
+
     {% if request.user.profile.role in 'student teacher' %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'course_list' %}">
@@ -104,12 +101,14 @@
         </a>
       </li>
     {% endif %}
-    {% if request.user.is_superuser or request.user.profile.role == 'admin' or request.user.profile.role == 'student' %}
+
+    <!-- Enrollments -->
+    {% if request.user.is_superuser or request.user.profile.role in 'admin student' %}
       <li class="nav-item">
-        <a class="nav-link" 
-           data-toggle="collapse" 
-           href="#enrollments" 
-           aria-expanded="{% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}true{% else %}false{% endif %}" 
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#enrollments"
+           aria-expanded="{% if request.resolver_match.url_name == 'enrollment_list' or request.resolver_match.url_name == 'enroll_student' or request.resolver_match.url_name == 'my_enrollments' %}true{% else %}false{% endif %}"
            aria-controls="enrollments">
           <span class="icon-bg">
             <i class="mdi mdi-school menu-icon"></i>
@@ -117,7 +116,7 @@
           <span class="menu-title">Enrollments</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse {% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}show{% endif %}" id="enrollments">
+        <div class="collapse {% if request.resolver_match.url_name == 'enrollment_list' or request.resolver_match.url_name == 'enroll_student' or request.resolver_match.url_name == 'my_enrollments' %}show{% endif %}" id="enrollments">
           <ul class="nav flex-column sub-menu">
             {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
               <li class="nav-item">
@@ -139,6 +138,8 @@
         </div>
       </li>
     {% endif %}
+
+    <!-- Lessons -->
     <li class="nav-item">
       {% if request.user.profile.role == 'student' %}
         <a class="nav-link" href="{% url 'lesson_list' %}">
@@ -148,30 +149,24 @@
           <span class="menu-title">Lessons</span>
         </a>
       {% else %}
-        <a
-          class="nav-link"
-          data-toggle="collapse"
-          href="#lesson"
-          aria-expanded="{% if request.resolver_match.url_name in 'send-lesson lesson_list' %}true{% else %}false{% endif %}"
-          aria-controls="lesson"
-        >
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#lesson"
+           aria-expanded="{% if request.resolver_match.url_name == 'send-lesson' or request.resolver_match.url_name == 'lesson_list' %}true{% else %}false{% endif %}"
+           aria-controls="lesson">
           <span class="icon-bg">
             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
           </span>
           <span class="menu-title">Lessons</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse {% if request.resolver_match.url_name in 'send-lesson lesson_list' %}show{% endif %}" id="lesson">
+        <div class="collapse {% if request.resolver_match.url_name == 'send-lesson' or request.resolver_match.url_name == 'lesson_list' %}show{% endif %}" id="lesson">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.url_name == 'send-lesson' %}active{% endif %}" href="{% url 'send-lesson' %}">
-                Send Lesson
-              </a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'send-lesson' %}active{% endif %}" href="{% url 'send-lesson' %}">Send Lesson</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.url_name == 'lesson_list' %}active{% endif %}" href="{% url 'lesson_list' %}">
-                Lesson List
-              </a>
+              <a class="nav-link {% if request.resolver_match.url_name == 'lesson_list' %}active{% endif %}" href="{% url 'lesson_list' %}">Lesson List</a>
             </li>
           </ul>
         </div>
