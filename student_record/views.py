@@ -1,5 +1,5 @@
 from django import forms
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Count
 from .decorator import role_required
@@ -204,16 +204,91 @@ def course_create(request):
         form = CourseForm()
     return render(request, 'course/course_form.html', {'form': form})
 
+@login_required
+def edit_course(request, course_id):
+    if not (request.user.is_superuser or request.user.profile.role == 'admin'):
+        return HttpResponseForbidden("You are not allowed to edit courses")
+    
+    course = get_object_or_404(Course, id=course_id)
+    
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            form.save()
+            return redirect('course_list')
+    else:
+        form = CourseForm(instance=course)
+    
+    return render(request, 'pages/add_course.html', {'form': form, 'title': 'Edit Course'})
+
+@login_required
+def delete_course(request, course_id):
+    if not (request.user.is_superuser or request.user.profile.role == 'admin'):
+        return HttpResponseForbidden("You are not allowed to delete courses")
+    
+    course = get_object_or_404(Course, id=course_id)
+    if request.method == 'POST':
+        course.delete()
+        return redirect('course_list')
+    
+    return render(request, 'pages/course_list.html', {'course': course})
+
 def enrollment_create(request):
     if request.method == 'POST':
         form = EnrollmentForm(request.POST)
         
         if form.is_valid():
             form.save()
-            return redirect('dashboard')
+            if request.user.profile.role == 'student':
+                return redirect('student_dashboard')
+            else:
+                return redirect('dashboard')
     else:
         form = EnrollmentForm()
     return render(request, 'pages/enrollments.html', {'form': form})
+
+@login_required
+def enrollment_list(request):
+    user = request.user
+    if user.is_superuser or user.profile.role == 'admin':
+        enrollments = Enrollment.objects.select_related('student', 'course').all()
+    else:
+        enrollments = Enrollment.objects.filter(student=user.student).select_related('course')
+    return render(request, 'pages/enrollment_list.html', {'enrollments': enrollments})
+
+@login_required
+def enrollment_edit(request, enrollment_id):
+    if not (request.user.is_superuser or request.user.profile.role == 'admin'):
+        return HttpResponseForbidden("You are not allowed to edit enrollments")
+
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+
+    if request.method == "POST":
+        form = EnrollmentForm(request.POST, instance=enrollment)
+        if form.is_valid():
+            form.save()
+            return redirect('enrollments')
+    else:
+        form = EnrollmentForm(instance=enrollment)
+
+    return render(request, 'pages/enrollments.html', {'form': form, 'enrollment': enrollment})
+
+
+@login_required
+def enrollment_delete(request, enrollment_id):
+    if not (request.user.is_superuser or request.user.profile.role == 'admin'):
+        return HttpResponseForbidden("You are not allowed to delete enrollments")
+
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+
+    if request.method == "POST":
+        enrollment.delete()
+        return redirect('enrollments')
+
+    # Optional: show confirmation page (can also skip if using JS confirm)
+    return render(request, 'pages/enrollments.html', {'enrollment': enrollment})
+
+
 
 def student_edit(request, pk):
     student = get_object_or_404(Student, pk=pk)
@@ -237,55 +312,41 @@ def student_delete(request, pk):
 @login_required
 def send_lesson(request):
     user = request.user
-
-    # Determine teacher if user is a teacher
-    teacher = None
-    if hasattr(user, 'teacher_profile'):
-        teacher = user.teacher_profile
-
-    # Admin can send lesson too
+    teacher = getattr(user, 'teacher_profile', None)
     is_admin = user.profile.role == 'admin'
 
     if request.method == "POST":
-        # Pass teacher only if teacher is sending
         form = LessonForm(request.POST, teacher=teacher if teacher else None)
-        course_id = request.POST.get('course')
 
+        course_id = request.POST.get('course')
         if course_id:
-            # Show only enrolled students for the selected course
             form.fields['students'].queryset = Student.objects.filter(enrollments__course_id=course_id)
 
         if form.is_valid():
             lesson = form.save(commit=False)
+
             if teacher:
-                lesson.teacher = teacher  # teacher assigned
+                lesson.teacher = teacher  # Assign teacher
             elif is_admin:
-                # Admin has to select a teacher from form if needed
-                selected_teacher_id = form.cleaned_data.get('teacher')
-                if selected_teacher_id:
-                    lesson.teacher = Teacher.objects.get(id=selected_teacher_id)
+                lesson.teacher = None  # Admin sent
             lesson.save()
             form.save_m2m()
             return redirect("send-lesson")
     else:
         form = LessonForm(teacher=teacher if teacher else None)
 
-        # If admin, show all courses and all students in dropdown
         if is_admin:
             form.fields['course'].queryset = Course.objects.all()
             form.fields['students'].queryset = Student.objects.all()
-            # Optional: let admin select teacher if lesson.teacher is required
-            form.fields['teacher'] = forms.ModelChoiceField(
-                queryset=Teacher.objects.all(),
-                required=False,
-                label="Assign Teacher",
-                widget=forms.Select(attrs={'class': 'form-control'})
-            )
+            form.fields.pop('teacher', None)  # Remove teacher field for admin
+
         elif teacher:
-            # Teacher: only show their courses
             form.fields['course'].queryset = teacher.courses.all()
 
-    return render(request, "pages/send_lesson.html", {"form": form})
+    return render(request, "pages/send_lesson.html", {"form": form, "is_admin": is_admin})
+
+
+
 
 
 @login_required
@@ -468,17 +529,23 @@ def login_user(request):
 
     return render(request, 'pages/login.html')
  
-def home_redirect(request):
-    if request.user.is_superuser:
-        return redirect('dashboard')  # Superuser goes to admin dashboard
+from django.shortcuts import redirect
 
-    role = request.user.profile.role
+def home_redirect(request):
+    if request.user.is_anonymous:
+        return redirect('login')
+
+    if request.user.is_superuser:
+        return redirect('dashboard')
+
+    role = getattr(request.user.profile, 'role', None)
     if role == 'student':
         return redirect('student_dashboard')
     elif role == 'teacher':
         return redirect('teacher_dashboard')
     else:
-        return redirect('dashboard')
+        return redirect('login')
+
 
 def register(request):
     credentials = None

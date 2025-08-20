@@ -126,7 +126,14 @@
             {% if lesson.course %}
               <span class="badge-course">{{ lesson.course.title }}</span>
             {% endif %}
-            <span>By {{ lesson.teacher.name }}</span>
+            <span>
+  By 
+  {% if lesson.teacher %}
+    {{ lesson.teacher.name }}
+  {% else %}
+    Admin
+  {% endif %}
+</span>
             <span>
               {% if lesson.students.exists %}
                 {% for s in lesson.students.all %}

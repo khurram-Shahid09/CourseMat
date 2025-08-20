@@ -547,16 +547,38 @@
 </li>
 {% endif %}
             <!-- Enrollments -->
-             {% if request.user.is_superuser or request.user.profile.role == 'admin' or request.user.profile.role == 'student' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url "enrollment_create" %}">
-                <span class="icon-bg"
-                  ><i class="mdi mdi-school menu-icon"></i
-                ></span>
-                <span class="menu-title">Enrollments</span>
-              </a>
-            </li>
-              {% endif %}
+            {% if request.user.is_superuser or request.user.profile.role == 'admin' or request.user.profile.role == 'student' %}
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href="#enrollments" 
+     aria-expanded="{% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}true{% else %}false{% endif %}" 
+     aria-controls="enrollments">
+    <span class="icon-bg"><i class="mdi mdi-school menu-icon"></i></span>
+    <span class="menu-title">Enrollments</span>
+    <i class="menu-arrow"></i>
+  </a>
+  <div class="collapse {% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}show{% endif %}" id="enrollments">
+    <ul class="nav flex-column sub-menu">
+      {% if request.user.is_superuser or request.user.profile.role == 'admin'   %}
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'enrollment_list' %}active{% endif %}" href="{% url "enrollments" %}">All Enrollments</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'enrollment_create' %}">Add Enrollment</a>
+      </li>
+      {% endif %}
+      {% if request.user.profile.role == 'student' %}
+      <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'my_enrollments' %}active{% endif %}" href="{% url "enrollments" %}">My Enrollments</a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'enrollment_create' %}">Add Enrollment</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</li>
+{% endif %}
+
             {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
              <li class="nav-item">
   <a

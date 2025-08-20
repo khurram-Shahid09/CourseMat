@@ -113,7 +113,7 @@ class LessonForm(forms.ModelForm):
     teacher = forms.ModelChoiceField(
         queryset=Teacher.objects.none(),
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control', 'readonly': True})
+        widget=forms.Select(attrs={'class': 'form-control'})
     )
 
     students = forms.ModelMultipleChoiceField(
@@ -126,17 +126,18 @@ class LessonForm(forms.ModelForm):
         model = Lesson
         fields = ['title', 'content', 'course', 'teacher', 'students']
 
-def __init__(self, *args, **kwargs):
-    teacher = kwargs.pop('teacher', None)
-    super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        teacher = kwargs.pop('teacher', None)
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
 
-    if teacher:
-        self.fields['course'].queryset = teacher.courses.all()
-        self.fields['teacher'].queryset = Teacher.objects.filter(id=teacher.id)
-        self.fields['teacher'].initial = teacher.id
-        self.fields['teacher'].disabled = True
-    else:
-        self.fields['course'].queryset = Course.objects.all()
-        self.fields['teacher'].queryset = Teacher.objects.all()
-        self.fields['teacher'].required = False
+        if user and user.profile.role == 'teacher' and teacher:
+            self.fields['course'].queryset = teacher.courses.all()
+            self.fields['teacher'].queryset = Teacher.objects.filter(id=teacher.id)
+            self.fields['teacher'].initial = teacher.id
+            self.fields['teacher'].disabled = True
+        else:
+            self.fields['course'].queryset = Course.objects.all()
+            self.fields['teacher'].queryset = Teacher.objects.all()
+
 

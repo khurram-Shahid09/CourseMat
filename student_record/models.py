@@ -125,7 +125,7 @@ class Teacher(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE,blank=True, null=True)
     course = models.ForeignKey('Course', on_delete=models.CASCADE, blank=True, null=True)
     students = models.ManyToManyField('Student', blank=True)  # optional specific students
     created_at = models.DateTimeField(auto_now_add=True)
