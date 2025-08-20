@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -683,8 +683,8 @@
                 </ul>
               </div>
             </li>
-          </ul> {% endcomment %}
-        </nav>
+          </ul> 
+        </nav> 
 
         <!-- Main Content Area -->
         <div class="main-panel">
@@ -736,7 +736,7 @@
     <script src="{% static 'assets/js/off-canvas.js' %}"></script>
     <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
     <script src="{% static 'assets/js/misc.js' %}"></script>
-    {% endcomment %}
+    
     {% block extra_js %}{% endblock %}
   </body>
-</html>
+</html> {% endcomment %}
