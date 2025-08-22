@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Create Batch{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-title">Create Batch</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Create Batch</li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Batch Form</h4>
+                <p class="card-description">Select course, teacher, and set start/end dates & fee</p>
+
+                <form method="post" class="forms-sample">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ form.course.id_for_label }}">Course</label>
+                        {{ form.course|add_class:"form-control" }}
+                        {% if form.course.errors %}
+                            <div class="text-danger">{{ form.course.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.teacher.id_for_label }}">Teacher</label>
+                        {{ form.teacher|add_class:"form-control" }}
+                        {% if form.teacher.errors %}
+                            <div class="text-danger">{{ form.teacher.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+                        {{ form.start_date|add_class:"form-control"|attr:"type:date" }}
+                        {% if form.start_date.errors %}
+                            <div class="text-danger">{{ form.start_date.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.end_date.id_for_label }}">End Date</label>
+                        {{ form.end_date|add_class:"form-control"|attr:"type:date" }}
+                        {% if form.end_date.errors %}
+                            <div class="text-danger">{{ form.end_date.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.fee.id_for_label }}">Batch Fee</label>
+                        {{ form.fee|add_class:"form-control" }}
+                        {% if form.fee.errors %}
+                            <div class="text-danger">{{ form.fee.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mr-2">Save Batch</button>
+                    <a href="{% url 'batch_list' %}" class="btn btn-light">Back to Batches</a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

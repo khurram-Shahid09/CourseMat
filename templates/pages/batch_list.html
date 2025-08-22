@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Batches{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-title">Batches</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Batches</li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">All Batches</h4>
+                <div class="mb-3">
+                    <a href="{% url 'create_batch' %}" class="btn btn-primary">Create New Batch</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Batch Code</th>
+                                <th>Course</th>
+                                <th>Teacher</th>
+                                <th>Batch Number</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Fee</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for batch in batches %}
+                            <tr>
+                                <td>{{ batch.batch_code }}</td>
+                                <td>{{ batch.course.title }}</td>
+                                <td>{{ batch.teacher.name }}</td>
+                                <td>{{ batch.number }}</td>
+                                <td>{{ batch.start_date|date:"M d, Y" }}</td>
+                                <td>{{ batch.end_date|date:"M d, Y" }}</td>
+                                <td>${{ batch.fee }}</td>
+                                <td>
+                                    {% if batch.end_date < today %}
+                                        <span class="badge bg-danger">Completed</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'batch_edit' batch.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'batch_delete' batch.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this batch?');">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">No batches available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

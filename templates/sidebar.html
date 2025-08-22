@@ -102,7 +102,43 @@
       </li>
     {% endif %}
 
+    {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+      <li class="nav-item">
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#batches"
+           aria-expanded="{% if request.resolver_match.url_name == 'enrollment_list' or request.resolver_match.url_name == 'enroll_student' or request.resolver_match.url_name == 'my_enrollments' %}true{% else %}false{% endif %}"
+           aria-controls="batches">
+          <span class="icon-bg">
+            <i class="mdi mdi-school menu-icon"></i>
+          </span>
+          <span class="menu-title">Batch</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse {% if request.resolver_match.url_name == 'enrollment_list' or request.resolver_match.url_name == 'enroll_student' or request.resolver_match.url_name == 'my_enrollments' %}show{% endif %}" id="batches">
+          <ul class="nav flex-column sub-menu">
+            {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'enrollment_list' %}active{% endif %}" href="{% url 'batch_list' %}">All Batches</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'create_batch' %}">Create Batch</a>
+              </li>
+            {% endif %}
+            {% if request.user.profile.role == 'student' %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'my_enrollments' %}active{% endif %}" href="{% url 'batches' %}">My Enrollments</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'enrollment_create' %}">Add Enrollment</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </li>
+      {% endif %}
     <!-- Enrollments -->
+
     {% if request.user.is_superuser or request.user.profile.role in 'admin student' %}
       <li class="nav-item">
         <a class="nav-link"
@@ -172,5 +208,32 @@
         </div>
       {% endif %}
     </li>
+          {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+  <!-- Users Menu -->
+  <li class="nav-item">
+    <a class="nav-link"
+       data-toggle="collapse"
+       href="#users"
+       aria-expanded="{% if request.resolver_match.url_name in 'user_list user_create user_update_role' %}true{% else %}false{% endif %}"
+       aria-controls="users">
+      <span class="icon-bg">
+        <i class="mdi mdi-account menu-icon"></i>
+      </span>
+      <span class="menu-title">Users</span>
+      <i class="menu-arrow"></i>
+    </a>
+    <div class="collapse {% if request.resolver_match.url_name in 'user_list user_create user_update_role' %}show{% endif %}" id="users">
+      <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'user_list' %}active{% endif %}" href="{% url 'user_list' %}">All Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'user_create' %}active{% endif %}" href="{% url 'fee_management' %}">Add User</a>
+        </li>
+      </ul>
+    </div>
+  </li>
+{% endif %}
   </ul>
+
 </nav>

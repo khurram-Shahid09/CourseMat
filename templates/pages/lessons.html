@@ -107,9 +107,17 @@
     font-weight: bold;
     cursor: pointer;
 }
+@media (max-width: 576px) {
+    .lesson-meta-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .forms-sample .row.g-2 > .col-auto {
+        width: 100%;
+    }
+}
 </style>
 {% endblock %}
-
 {% block content %}
 <div class="page-header mb-4">
     <h3 class="page-title">Lessons</h3>
@@ -118,23 +126,28 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <form method="get" class="forms-sample row g-2 align-items-end">
+
       <div class="col-auto">
-        {{ form.course.label_tag }} 
-        {{ form.course }}
+        <label>Batch</label>
+           {{ form.batch }}
       </div>
+
       <div class="col-auto">
-        {{ form.student.label_tag }}
         {% if request.user.profile.role == 'student' %}
-          <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled>
+          <label>Student</label>
+          <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled style="padding: .375rem .75rem; border-radius: .25rem; border: 1px solid #ced4da; height: calc(2.25rem + 2px);">
           <input type="hidden" name="student" value="{{ request.user.student.id }}">
         {% else %}
+          {{ form.student.label_tag }}
           {{ form.student }}
         {% endif %}
       </div>
+
       <div class="col-auto">
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
         <a href="{% url 'lesson_list' %}" class="btn btn-light btn-sm">Reset</a>
       </div>
+
     </form>
   </div>
 </div>
@@ -148,38 +161,44 @@
           <div class="lesson-content" title="{{ lesson.content }}">{{ lesson.content }}</div>
 
           {% if lesson.images.exists %}
-          <div class="lesson-images">
-            {% for img in lesson.images.all %}
-              {% if img.image %}
-                <img src="{{ img.image.url }}" alt="Lesson Image" class="lesson-img">
-              {% endif %}
-            {% endfor %}
-          </div>
+            <div class="lesson-images">
+              {% for img in lesson.images.all %}
+                {% if img.image %}
+                  <img src="{{ img.image.url }}" alt="Lesson Image" class="lesson-img">
+                {% endif %}
+              {% endfor %}
+            </div>
           {% endif %}
 
-          <div class="lesson-meta-info">
-            {% if lesson.course %}<span>Course: {{ lesson.course.title }}</span>{% endif %}
-            <span>By: {% if lesson.teacher %}{{ lesson.teacher.name }}{% else %}Admin{% endif %}</span>
-            {% if lesson.students.exists %}
-              <span>Students: {{ lesson.students.count }}</span>
-            {% else %}
-              <span>All Enrolled Students</span>
-            {% endif %}
-            <span>Created: {{ lesson.created_at|date:"Y-m-d H:i" }}</span>
-          </div>
+         <div class="lesson-meta-info">
+<!--    {% if lesson.course %}-->
+<!--        <span>Course: {{ lesson.course.course_code }} - {{ lesson.course.title }}</span>-->
+<!--    {% else %}-->
+<!--        <span>Course: Not assigned</span>-->
+<!--    {% endif %}-->
 
-        {% if request.user.is_superuser or request.user.profile.role in "teacher admin" %}
-  <div class="lesson-card-buttons">
-    <a href="{% url 'lesson_update' lesson.id %}" class="btn btn-sm btn-warning">Update</a>
+    {% if lesson.batch %}
+        <span>Batch: {{ lesson.batch.batch_code }}</span>
+    {% endif %}
 
-    <form action="{% url 'lesson_delete' lesson.id %}" method="post" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lesson?');">
-        Delete
-      </button>
-    </form>
-  </div>
-{% endif %}
+    <span>By: {% if lesson.teacher %}{{ lesson.teacher.name }}{% else %}Admin{% endif %}</span>
+    {% if lesson.students.exists %}
+        <span>Students: {{ lesson.students.count }}</span>
+    {% else %}
+        <span>All Enrolled Students</span>
+    {% endif %}
+    <span>Created: {{ lesson.created_at|date:"Y-m-d H:i" }}</span>
+</div>
+
+          {% if request.user.is_superuser or request.user.profile.role in "teacher admin" %}
+            <div class="lesson-card-buttons">
+              <a href="{% url 'lesson_update' lesson.id %}" class="btn btn-sm btn-warning">Update</a>
+              <form action="{% url 'lesson_delete' lesson.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lesson?');">Delete</button>
+              </form>
+            </div>
+          {% endif %}
 
         </div>
       {% endfor %}
@@ -204,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImg");
-    const closeBtn = document.querySelector("#imageModal .close");
+    const closeBtn = modal.querySelector(".close");
 
     document.querySelectorAll(".lesson-images img").forEach(function(img) {
         img.addEventListener("click", function() {

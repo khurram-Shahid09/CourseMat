@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h3 class="page-title">Users Management</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Filter Users</h5>
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.name_or_email.label }}</label>
+                        {{ form.name_or_email }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">{{ form.role.label }}</label>
+                        {{ form.role }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary me-2">
+                            Filter
+                        </button>
+                        <a href="{% url 'user_list' %}" class="btn btn-light">
+                            Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td class="fw-medium">{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <select class="form-select form-select-sm role-select" id="role-{{ user.id }}">
+                                        <option value="student" {% if user.profile.role == "student" %}selected{% endif %}>Student</option>
+                                        <option value="teacher" {% if user.profile.role == "teacher" %}selected{% endif %}>Teacher</option>
+                                        <option value="admin" {% if user.profile.role == "admin" %}selected{% endif %}>Admin</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    {% if user.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.last_login %}
+                                        {{ user.last_login|date:"M d, Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">Never</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <form method="post" action="{% url 'user_update_role' user.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="role" id="role-input-{{ user.id }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-success"
+                                                    onclick="document.getElementById('role-input-{{ user.id }}').value=document.getElementById('role-{{ user.id }}').value;">
+                                                Update Role
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'user_delete' user.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete {{ user.username }}?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="mdi mdi-account-question display-4 text-muted"></i>
+                                    <p class="mt-2 mb-0">No users found.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-select {
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        transition: all 0.2s ease-in-out;
+        width: 120px;
+    }
+    .role-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13, 110, 253, 0.5);
+    }
+    .gap-2 {
+        gap: 8px;
+    }
+    .table th {
+        font-weight: 600;
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

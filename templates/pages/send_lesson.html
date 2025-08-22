@@ -230,21 +230,21 @@
           </div>
 
           <div class="form-group">
-            <label for="{{ form.course.id_for_label }}">Course</label>
-            {{ form.course }}
-            {% if form.course.errors %}
-              <div class="text-danger">{{ form.course.errors }}</div>
+            <label for="{{ form.batch.id_for_label }}">Batch</label>
+            {{ form.batch }}
+            {% if form.batch.errors %}
+              <div class="text-danger">{{ form.batch.errors }}</div>
             {% endif %}
           </div>
 
           <div class="form-group">
             <div class="send-all-container">
-                <input type="checkbox" id="send_all_students"> 
-                <label for="send_all_students">Send to All Students in Course</label>
+                <input type="checkbox" id="send_all_students">
+                <label for="send_all_students">Send to All Students in Batch</label>
             </div>
             <label>Select Students</label>
             <div id="students-container">
-                <div class="loading-students">Please select a course to view students</div>
+                <div class="loading-students">Please select a batch to view students</div>
             </div>
           </div>
 
@@ -273,21 +273,20 @@
 <script>
 $(document).ready(function() {
 
-    // Preselected students passed from view
     var preselectedStudents = {% if selected_students %}{{ selected_students|safe }}{% else %}[] {% endif %};
 
-    function loadStudents(course_id, preselected=[]) {
+    function loadStudents(batch_id, preselected=[]) {
         var container = $('#students-container');
         container.html('<div class="loading-students">Loading students...</div>');
 
-        if(course_id) {
+        if(batch_id) {
             $.ajax({
-                url: "{% url 'get_course_students' %}",
-                data: { 'course_id': course_id },
+                url: "{% url 'get_batch_students' %}",
+                data: { 'batch_id': batch_id },
                 dataType: 'json',
                 success: function(data) {
                     if(data.students.length === 0) {
-                        container.html('<div class="loading-students">No students enrolled in this course</div>');
+                        container.html('<div class="loading-students">No students in this batch</div>');
                     } else {
                         container.empty();
                         data.students.forEach(function(student) {
@@ -314,18 +313,18 @@ $(document).ready(function() {
                 }
             });
         } else {
-            container.html('<div class="loading-students">Please select a course to view students</div>');
+            container.html('<div class="loading-students">Please select a batch to view students</div>');
         }
     }
 
-    var initialCourse = $('#id_course').val();
-    if(initialCourse){
-        loadStudents(initialCourse, preselectedStudents);
+    var initialBatch = $('#id_batch').val();
+    if(initialBatch){
+        loadStudents(initialBatch, preselectedStudents);
     }
 
-    $('#id_course').change(function() {
-        var course_id = $(this).val();
-        loadStudents(course_id);
+    $('#id_batch').change(function() {
+        var batch_id = $(this).val();
+        loadStudents(batch_id);
         $('#send_all_students').prop('checked', false);
     });
 
@@ -352,6 +351,8 @@ $(document).ready(function() {
             });
         }
     });
+
 });
 </script>
 {% endblock %}
+

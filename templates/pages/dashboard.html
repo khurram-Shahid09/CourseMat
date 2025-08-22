@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 
-{% block title %}
-Dashboard
-{% endblock %}
+{% block title %} Dashboard {% endblock %}
 
 {% block extra_css %}
 <style>
@@ -19,10 +17,10 @@ Dashboard
     }
     .card-stats:hover { transform: translateY(-5px); }
     .card-stats h3 { font-size: 30px; font-weight: bold; margin-bottom: 5px; }
-    .card-stats p { font-size: 14px; letter-spacing: 0.5px; margin: 0; opacity: 0.9; }
-    .table thead th { background: #f8f9fc; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
-    .table tbody tr:hover { background: #f1f5ff; }
+    .card-stats p { font-size: 14px; margin: 0; opacity: 0.9; }
     .card-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #4e73df; }
+    canvas { max-height: 300px; }
+    .chart-container { padding: 15px; }
 </style>
 {% endblock %}
 
@@ -32,56 +30,74 @@ Dashboard
 </div>
 
 <div class="row">
-    <!-- Students Card -->
-    <div class="col-md-3 col-sm-6">
-        <div class="card-stats">
-            <h3>{{ students_count }}</h3>
-            <p>Students</p>
-        </div>
+    <div class="col-md col-sm-6">
+        <div class="card-stats"><h3>{{ students_count }}</h3><p>Students</p></div>
     </div>
-
-    <!-- Courses Card -->
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md col-sm-6">
         <div class="card-stats" style="background: linear-gradient(135deg, #1cc88a, #17a673);">
-            <h3>{{ courses_count }}</h3>
-            <p>Courses</p>
+            <h3>{{ courses_count }}</h3><p>Courses</p>
         </div>
     </div>
-
-    <!-- Enrollments Card -->
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md col-sm-6">
+        <div class="card-stats" style="background: linear-gradient(135deg, #36b9cc, #1fa2c3);">
+            <h3>{{ batches_count }}</h3><p>Batches</p>
+        </div>
+    </div>
+    <div class="col-md col-sm-6">
         <div class="card-stats" style="background: linear-gradient(135deg, #f6c23e, #dda20a);">
-            <h3>{{ enrollments_count }}</h3>
-            <p>Enrollments</p>
+            <h3>{{ enrollments_count }}</h3><p>Enrollments</p>
         </div>
     </div>
-
-    <!-- Teachers Card -->
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md col-sm-6">
         <div class="card-stats" style="background: linear-gradient(135deg, #e74a3b, #be2617);">
-            <h3>{{ teachers_count }}</h3>
-            <p>Teachers</p>
+            <h3>{{ teachers_count }}</h3><p>Teachers</p>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <!-- Recent Enrollments -->
+<div class="row mt-3">
+    <div class="col-md-6 chart-container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Top Teachers</h4>
+                <canvas id="teachersChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 chart-container mt-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Top Courses</h4>
+                <canvas id="coursesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6 chart-container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Enrollment Trends</h4>
+                <canvas id="enrollmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-4">
     <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-body">
                 <h4 class="card-title">Recent Enrollments</h4>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-sm table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Enrollment ID</th>
-                                <th>Student</th>
-                                <th>Course</th>
-                                <th>Status</th>
-                                <th>Enrolled On</th>
-                                <th>Start Date</th>
-                                <th>Paid Fee</th>
+                                <th>ID</th><th>Student</th><th>Course</th>
+                                <th>Batch</th><th>Status</th><th>Enrolled On</th><th>Fee</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,78 +105,14 @@ Dashboard
                             <tr>
                                 <td>{{ enrollment.roll_number }}</td>
                                 <td>{{ enrollment.student.name }}</td>
-                                <td>{{ enrollment.course.title }}</td>
+                                <td>{{ enrollment.batch.course.title }}</td>
+                                <td>Batch {{ enrollment.batch.number }}</td>
                                 <td>{{ enrollment.status }}</td>
                                 <td>{{ enrollment.enrolled_on|date:"M d, Y" }}</td>
-                                <td>{{ enrollment.start_date|date:"M d, Y" }}</td>
                                 <td>${{ enrollment.fee_at_enrollment }}</td>
                             </tr>
                             {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">No recent enrollments</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Courses -->
-    <div class="col-md-6 mt-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="card-title">Top Courses</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Enrollments</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for course in top_courses %}
-                            <tr>
-                                <td>{{ course.title }}</td>
-                                <td>{{ course.enrollments_count }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="2" class="text-center text-muted">No course data available</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Teachers -->
-    <div class="col-md-6 mt-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="card-title">Top Teachers</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Teacher</th>
-                                <th>Number of Courses</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for teacher in top_teachers %}
-                            <tr>
-                                <td>{{ teacher.name }}</td>
-                                <td>{{ teacher.courses_count }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="2" class="text-center text-muted">No teacher data available</td>
-                            </tr>
+                            <tr><td colspan="7" class="text-center text-muted">No recent enrollments</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -169,4 +121,61 @@ Dashboard
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const enrollmentChart = new Chart(document.getElementById('enrollmentChart'), {
+        type: 'line',
+        data: {
+            labels: {{ enrollment_labels|safe }},
+            datasets: [{
+                label: 'Enrollments',
+                data: {{ enrollment_data|safe }},
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78,115,223,0.2)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            plugins: { legend: { display: true } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { autoSkip: false } }
+            }
+        }
+    });
+
+    const coursesChart = new Chart(document.getElementById('coursesChart'), {
+        type: 'pie',
+        data: {
+            labels: [{% for course in top_courses %}"{{ course.title }}",{% endfor %}],
+            datasets: [{
+                data: [{% for course in top_courses %}{{ course.enrollments_count }},{% endfor %}],
+                backgroundColor: ['#4e73df','#1cc88a','#36b9cc','#f6c23e','#e74a3b','#858796','#fd7e14','#20c997']
+            }]
+        },
+        options: { plugins: { legend: { position: 'right' } } }
+    });
+
+    const teachersChart = new Chart(document.getElementById('teachersChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for teacher in top_teachers %}"{{ teacher.name }}",{% endfor %}],
+            datasets: [{
+                label: 'Total Students',
+                data: [{% for teacher in top_teachers %}{{ teacher.students_count }},{% endfor %}],
+                backgroundColor: '#17a673'
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
 {% endblock %}

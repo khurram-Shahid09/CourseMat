@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
+
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -25,7 +28,6 @@ class Student(models.Model):
 class Course(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
-    fees = models.PositiveBigIntegerField()
     duration = models.PositiveIntegerField(help_text="Duration in weeks", default=3)
     level = models.CharField(
         max_length=20,
@@ -44,66 +46,131 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.title} ({self.course_code})"
 
+class Batch(models.Model):
+    course = models.ForeignKey(Course, related_name="batches", on_delete=models.CASCADE)
+    teacher = models.ForeignKey("Teacher", related_name="batches", on_delete=models.CASCADE)
+    number = models.PositiveSmallIntegerField()  # 1, 2, or 3
+    start_date = models.DateField()
+    end_date = models.DateField()
+    fee = models.PositiveBigIntegerField()
+    batch_code = models.CharField(max_length=20, unique=True, blank=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("course", "number")  # prevent duplicate batch numbers per course
+
+    def clean(self):
+        if self.course.batches.exclude(pk=self.pk).count() >= 3:
+            raise ValidationError(f"Course {self.course.title} already has 3 batches.")
+        if self.start_date >= self.end_date:
+            raise ValidationError("Start date must be before end date.")
+
+    def save(self, *args, **kwargs):
+        if not self.batch_code and self.course:
+            self.batch_code = f"{self.course.course_code}-B{self.number}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.title
+        return f"{self.batch_code} - {self.course.title} ({self.teacher.name})"
 
-from django.core.exceptions import ValidationError
+
+
 
 class Enrollment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='enrollments')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    FEE_TYPE_CHOICES = [
+        ('one_time', 'One-time'),
+        ('installment', 'Installment'),
+        ('custom', 'Custom'),
+    ]
+
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='enrollments')
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='enrollments')
     enrolled_on = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=[('enrolled','Enrolled'), ('completed','Completed'), ('dropped','Dropped')], default='enrolled')
-    start_date = models.DateField(blank=True, null=True, default=None)
+    status = models.CharField(
+        max_length=20,
+        choices=[('enrolled', 'Enrolled'), ('completed', 'Completed'), ('dropped', 'Dropped')],
+        default='enrolled'
+    )
+    fee_type = models.CharField(max_length=20, choices=FEE_TYPE_CHOICES, default='one_time')
     fee_at_enrollment = models.PositiveBigIntegerField(blank=True, null=True)
+    paid_amount = models.PositiveBigIntegerField(default=0)  # for one-time/custom
     roll_number = models.CharField(max_length=20, blank=True, editable=False, unique=True)
+
+    class Meta:
+        unique_together = ('student', 'batch')
 
     def clean(self):
         if self.student:
-            enrollment_count = Enrollment.objects.filter(student=self.student).exclude(pk=self.pk).count()
-            if enrollment_count >= 3:
+            # Max 3 courses per student
+            enrolled_courses = Enrollment.objects.filter(student=self.student).exclude(pk=self.pk).values_list(
+                "batch__course", flat=True
+            ).distinct()
+            if len(enrolled_courses) >= 3:
                 raise ValidationError(f"{self.student.name} is already enrolled in 3 courses.")
 
-            already_enrolled = Enrollment.objects.filter(student=self.student, course=self.course).exclude(pk=self.pk).exists()
-            if already_enrolled:
-                raise ValidationError(
-                    f"⚠️ {self.student.name} is already enrolled in the course '{self.course.title}'."
-                )
+            # Prevent duplicate enrollment in same course
+            if Enrollment.objects.filter(student=self.student, batch__course=self.batch.course).exclude(pk=self.pk).exists():
+                raise ValidationError(f"{self.student.name} is already enrolled in {self.batch.course.title}.")
+
+            # Enforce batch capacity (10 students max)
+            if self.batch.enrollments.exclude(pk=self.pk).count() >= 10:
+                raise ValidationError(f"Batch {self.batch.number} of {self.batch.course.title} is already full.")
 
     def save(self, *args, **kwargs):
         self.full_clean()
 
-        if self.fee_at_enrollment is None and self.course:
-            self.fee_at_enrollment = self.course.fees
+        if self.fee_at_enrollment is None and self.batch:
+            self.fee_at_enrollment = self.batch.fee
 
-        if not self.roll_number and self.course:
-            last_enrollment = (
-                Enrollment.objects
-                .filter(course=self.course)
-                .order_by('-roll_number')
-                .first()
-            )
-
+        if not self.roll_number:
+            last_enrollment = Enrollment.objects.filter(batch=self.batch).order_by('-roll_number').first()
+            last_num = 0
             if last_enrollment:
                 try:
                     last_num = int(last_enrollment.roll_number.split('-')[-1])
                 except ValueError:
-                    last_num = 0
-                next_num = str(last_num + 1).zfill(4)
-            else:
-                next_num = '0001'
-
-            self.roll_number = f"{self.course.course_code}-{next_num}"
+                    pass
+            next_num = str(last_num + 1).zfill(4)
+            self.roll_number = f"{self.batch.course.course_code}-B{self.batch.number}-{next_num}"
 
         super().save(*args, **kwargs)
 
+        # Auto-create installments if fee_type is 'installment'
+        if self.fee_type == 'installment' and not self.installments.exists():
+            num_months = 3
+            installment_amount = self.fee_at_enrollment // num_months
+            for i in range(num_months):
+                due_date = self.batch.start_date + relativedelta(months=i)
+                Installment.objects.create(
+                    enrollment=self,
+                    due_date=due_date,
+                    amount=installment_amount,
+                    paid_amount=0,
+                    status='pending'
+                )
+
+    @property
+    def pending_amount(self):
+        #if self.fee_type == 'installment':
+            # installments = self.installments.all()
+            # if installments.exists():
+            #     return sum(inst.amount - inst.paid_amount for inst in installments)
+            # fallback if installments not yet created
+            return max(self.fee_at_enrollment - self.paid_amount, 0)
+       # return max(self.fee_at_enrollment - self.paid_amount, 0)
+
+    @property
+    def is_fully_paid(self):
+        if self.fee_type == 'installment':
+            return all(inst.status == 'paid' for inst in self.installments.all())
+        return self.paid_amount >= self.fee_at_enrollment
+
     def __str__(self):
-        return f"{self.roll_number} - {self.student.name} enrolled in {self.course.title}"
-    
+        return f"{self.roll_number} - {self.student.name} in {self.batch.course.title} (Batch {self.batch.number})"
+
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher_profile',null=True,blank=True)
-    name = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -125,13 +192,18 @@ class Teacher(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE,blank=True, null=True)
-    course = models.ForeignKey('Course', on_delete=models.CASCADE, blank=True, null=True)
-    students = models.ManyToManyField('Student', blank=True)
+    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, blank=True, null=True)
+    course = models.ForeignKey('Course', on_delete=models.SET_NULL, blank=True, null=True)
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='lessons')
+    students = models.ManyToManyField('Student', blank=True, related_name='completed_lessons')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['created_at']
+
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.batch.batch_code})"
+
 
 class LessonImage(models.Model):
     lesson = models.ForeignKey(Lesson, related_name="images", on_delete=models.CASCADE)
@@ -150,4 +222,10 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
-
+#
+# class Installment(models.Model):
+#     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, related_name="installments")
+#     due_date = models.DateField()
+#     amount = models.PositiveBigIntegerField()
+#     paid_amount = models.PositiveBigIntegerField(default=0)
+#     status = models.CharField(max_length=20, choices=[('pending','Pending'), ('paid','Paid')])
