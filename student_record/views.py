@@ -1,7 +1,7 @@
 from django import forms
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from .decorator import role_required
 from .models import Course, Enrollment, Student, Teacher, Lesson, Profile, Batch, Installment
 from .forms import StudentForm, CourseForm, EnrollmentForm, TeacherForm, LessonForm, LessonFilterForm, LessonImage, \
@@ -20,6 +20,143 @@ from django.shortcuts import render
 from django.utils.timezone import now
 from datetime import timedelta
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
+from datetime import date
+from django.shortcuts import render
+from django.db.models import Count, Sum, F
+from django.utils import timezone
+
+from django.shortcuts import render
+from django.utils import timezone
+from datetime import datetime
+from django.db.models import Count, Sum
+from .models import Student, Course, Batch, Enrollment, Installment
+
+
+def admin_analytics(request):
+    today = timezone.now().date()
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    course_id = request.GET.get('course')
+    batch_id = request.GET.get('batch')
+
+    students = Student.objects.all()
+    courses = Course.objects.all()
+    batches = Batch.objects.all()
+    enrollments = Enrollment.objects.all()
+    installments = Installment.objects.all()
+
+    if course_id:
+        batches = batches.filter(course_id=course_id)
+        enrollments = enrollments.filter(batch__course_id=course_id)
+        installments = installments.filter(enrollment__batch__course_id=course_id)
+
+    if batch_id:
+        batches = batches.filter(id=batch_id)
+        enrollments = enrollments.filter(batch_id=batch_id)
+        installments = installments.filter(enrollment__batch_id=batch_id)
+
+    if start_date:
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d").date()
+        enrollments = enrollments.filter(enrolled_on__gte=start_dt)
+        installments = installments.filter(due_date__gte=start_dt)
+
+    if end_date:
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d").date()
+        enrollments = enrollments.filter(enrolled_on__lte=end_dt)
+        installments = installments.filter(due_date__lte=end_dt)
+
+    total_students = students.count()
+    active_students = students.filter(enrollments__isnull=False).distinct().count()
+    total_courses = courses.count()
+    active_courses = courses.filter(batches__isnull=False).distinct().count()
+    total_batches = batches.count()
+    ongoing_batches = batches.filter(start_date__lte=today, end_date__gte=today).count()
+    total_enrollments = enrollments.count()
+    enrollments_this_month = enrollments.filter(
+        enrolled_on__year=today.year,
+        enrolled_on__month=today.month
+    ).count()
+
+    # ✅ Fee from installments instead of enrollments
+    total_fee_collected = installments.aggregate(total=Sum('paid_amount'))['total'] or 0
+    total_pending_fee = installments.aggregate(total=Sum('amount'))['total'] or 0
+    total_pending_fee -= total_fee_collected
+
+    fee_collected_this_month = installments.filter(
+        paid_date__year=today.year,
+        paid_date__month=today.month
+    ).aggregate(total=Sum('paid_amount'))['total'] or 0
+
+    # Prepare charts
+    months = []
+    enrollments_data = []
+    collected = []
+    pending = []
+
+    for i in range(5, -1, -1):
+        month = (today.replace(day=1) - timezone.timedelta(days=i * 30))
+        month_start = month.replace(day=1)
+        month_end = (month_start + timezone.timedelta(days=31)).replace(day=1) - timezone.timedelta(days=1)
+
+        # Enrollment count
+        count = Enrollment.objects.filter(enrolled_on__gte=month_start, enrolled_on__lte=month_end).count()
+        enrollments_data.append(count)
+        months.append(month.strftime("%b %Y"))
+
+        # ✅ Fee from installments
+        month_installments = Installment.objects.filter(due_date__gte=month_start, due_date__lte=month_end)
+        collected.append(month_installments.aggregate(Sum('paid_amount'))['paid_amount__sum'] or 0)
+        pending_amount = month_installments.aggregate(Sum('amount'))['amount__sum'] or 0
+        collected_amount = month_installments.aggregate(Sum('paid_amount'))['paid_amount__sum'] or 0
+        pending.append((pending_amount or 0) - (collected_amount or 0))
+
+    enrollment_chart = {
+        'labels': months,
+        'data': enrollments_data
+    }
+
+    fee_chart = {
+        'labels': months,
+        'collected': collected,
+        'pending': pending
+    }
+
+    top_courses = Course.objects.annotate(num_enroll=Count('batches__enrollments')).order_by('-num_enroll')[:5]
+    top_courses_chart = {
+        'labels': [c.title for c in top_courses],
+        'data': [c.num_enroll for c in top_courses]
+    }
+
+    students_per_course = Course.objects.annotate(students_count=Count('batches__enrollments__student', distinct=True))
+    students_per_course_chart = {
+        'labels': [c.title for c in students_per_course],
+        'data': [c.students_count for c in students_per_course]
+    }
+
+    recent_enrollments = enrollments.order_by('-enrolled_on')[:10]
+
+    context = {
+        'total_students': total_students,
+        'active_students': active_students,
+        'total_courses': total_courses,
+        'active_courses': active_courses,
+        'total_batches': total_batches,
+        'ongoing_batches': ongoing_batches,
+        'total_enrollments': total_enrollments,
+        'enrollments_this_month': enrollments_this_month,
+        'total_fee_collected': total_fee_collected,
+        'total_pending_fee': total_pending_fee,
+        'fee_collected_this_month': fee_collected_this_month,
+        'enrollment_chart': enrollment_chart,
+        'fee_chart': fee_chart,
+        'top_courses_chart': top_courses_chart,
+        'students_per_course_chart': students_per_course_chart,
+        'recent_enrollments': recent_enrollments,
+        'courses': courses,
+        'batches': batches,
+    }
+    return render(request, 'pages/analytics_dashboard.html', context)
 
 @role_required('admin')
 def dashboard(request):
@@ -307,25 +444,9 @@ def delete_course(request, course_id):
     return render(request, 'pages/course_list.html', {'course': course})
 
 
-def enrollment_create(request):
-    if request.method == 'POST':
-        form = EnrollmentForm(request.POST, user=request.user)
-        if form.is_valid():
-            form.save()
-            if getattr(request.user.profile, 'role', None) == 'student':
-                return redirect('student_dashboard')
-            else:
-                return redirect('dashboard')
-        else:
-            print(form.errors)
-    else:
-        form = EnrollmentForm(user=request.user)
-
-    return render(request, 'pages/enrollments.html', {'form': form})
-
-
 def fee_management(request):
-    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course')
+    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
+        .prefetch_related('installments')
 
     # ----- Apply filters -----
     search = request.GET.get('search')
@@ -345,16 +466,29 @@ def fee_management(request):
         enrollments = enrollments.filter(batch__id=batch_id)
     if fee_type:
         enrollments = enrollments.filter(fee_type=fee_type)
+
     enrollments = list(enrollments)
+
+    # Compute total_fee, paid_amount, pending_amount for each enrollment
+    for e in enrollments:
+        if e.fee_type == 'installment':
+            e.total_fee = sum(inst.amount for inst in e.installments.all())
+            e.paid_amount_display = sum(inst.paid_amount for inst in e.installments.all())
+            e.pending_amount_display = e.total_fee - e.paid_amount_display
+        else:
+            e.total_fee = e.fee_at_enrollment
+            e.paid_amount_display = e.paid_amount
+            e.pending_amount_display = e.pending_amount
+
+    # ----- Filter by payment status -----
     if status == "paid":
-        enrollments = [e for e in enrollments if e.pending_amount == 0]
+        enrollments = [e for e in enrollments if e.pending_amount_display == 0]
     elif status == "partial":
-        enrollments = [e for e in enrollments if e.paid_amount > 0 and e.pending_amount > 0]
+        enrollments = [e for e in enrollments if 0 < e.paid_amount_display < e.total_fee]
     elif status == "pending":
-        enrollments = [e for e in enrollments if e.paid_amount == 0]
+        enrollments = [e for e in enrollments if e.paid_amount_display == 0]
 
     # ----- Handle POST update -----
-    form = None
     if request.method == 'POST':
         enrollment_id = request.POST.get('enrollment_id')
         enrollment = get_object_or_404(Enrollment, pk=enrollment_id)
@@ -363,7 +497,6 @@ def fee_management(request):
             enrollment = form.save()
             if enrollment.fee_type == 'installment':
                 generate_installments(enrollment)
-            #messages.success(request, f"Fees updated for {enrollment.student.name}")
             return redirect('fee_management')
 
     courses = Course.objects.all()
@@ -371,7 +504,6 @@ def fee_management(request):
 
     context = {
         'enrollments': enrollments,
-        'form': form,
         'courses': courses,
         'batches': batches,
     }
@@ -380,30 +512,144 @@ def fee_management(request):
 
 
 def generate_installments(enrollment):
-    from dateutil.relativedelta import relativedelta
-    from datetime import date
-
-    # Delete previous installments if any
+    # Delete old installments if any
     enrollment.installments.all().delete()
 
-    if enrollment.fee_type != 'installment':
-        return
+    batch = enrollment.batch
+    start_date = batch.start_date
+    end_date = batch.end_date
 
-    # Example: 3 installments
-    num_installments = 3
-    installment_amount = enrollment.fee_at_enrollment // num_installments
-    start_date = enrollment.enrolled_on or date.today()
+    # Calculate number of months between start and end
+    months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) + 1
 
-    for i in range(num_installments):
-        due_date = start_date + relativedelta(months=i)
-        Installment.objects.create(
-            enrollment=enrollment,
-            due_date=due_date,
-            amount=installment_amount,
+    if months <= 1:
+        # Only one installment if duration <= 1 month
+        enrollment.installments.create(
+            due_date=start_date,
+            amount=enrollment.fee_at_enrollment,
             paid_amount=0,
             status='pending'
         )
+    else:
+        installment_amount = enrollment.fee_at_enrollment // months
+        remainder = enrollment.fee_at_enrollment % months
 
+        for i in range(months):
+            installment_date = start_date + relativedelta(months=i)
+            amount = installment_amount + (remainder if i == months - 1 else 0)
+
+            enrollment.installments.create(
+                due_date=installment_date,
+                amount=amount,
+                paid_amount=0,
+                status='pending'
+            )
+
+
+from django.db.models import Q, Prefetch, F
+from django.shortcuts import render
+from .models import Enrollment, Installment, Course, Batch
+
+def installments_list(request):
+    # Fetch enrollments with related student, batch, course, and installments
+    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
+        .prefetch_related(
+            Prefetch('installments', queryset=Installment.objects.order_by('due_date'))
+        )
+
+    # ----- Apply filters -----
+    search = request.GET.get('search')
+    course_id = request.GET.get('course')
+    batch_id = request.GET.get('batch')
+    fee_type = request.GET.get('fee_type')
+    status = request.GET.get('status')
+
+    if search:
+        enrollments = enrollments.filter(
+            Q(student__name__icontains=search) |
+            Q(student__email__icontains=search)
+        )
+
+    if course_id:
+        enrollments = enrollments.filter(batch__course__id=course_id)
+
+    if batch_id:
+        enrollments = enrollments.filter(batch__id=batch_id)
+
+    if fee_type:
+        enrollments = enrollments.filter(fee_type=fee_type)
+
+    # Only include enrollments that have at least 1 installment
+    enrollments = [e for e in enrollments if e.installments.exists()]
+
+    # Filter by installment payment status
+    if status:
+        filtered_enrollments = []
+        for e in enrollments:
+            total_installments = sum(inst.amount for inst in e.installments.all())
+            paid_installments = sum(inst.paid_amount for inst in e.installments.all())
+
+            if status == 'paid' and paid_installments >= total_installments:
+                filtered_enrollments.append(e)
+            elif status == 'pending' and paid_installments == 0:
+                filtered_enrollments.append(e)
+            elif status == 'partial' and 0 < paid_installments < total_installments:
+                filtered_enrollments.append(e)
+        enrollments = filtered_enrollments
+
+    # Pass all courses and batches for filter dropdowns
+    courses = Course.objects.all()
+    batches = Batch.objects.all()
+
+    context = {
+        'enrollments': enrollments,
+        'courses': courses,
+        'batches': batches,
+        'request': request,  # so template can keep filter values
+    }
+
+    return render(request, 'pages/installments_list.html', context)
+
+
+
+
+def mark_installment_paid(request, installment_id):
+    installment = get_object_or_404(Installment, id=installment_id)
+    if request.method == 'POST':
+        installment.status = 'paid'
+        installment.paid_amount = installment.amount
+        installment.paid_date = timezone.now().date()
+        installment.save()
+        #messages.success(request, f'Installment for {installment.enrollment.student.name} marked as paid.')
+    return redirect('installments_list')
+
+def enrollment_create(request):
+    if request.method == 'POST':
+        form = EnrollmentForm(request.POST, user=request.user)
+        if form.is_valid():
+            enrollment = form.save()
+
+            if enrollment.fee_type == 'installment':
+                # For installment-based enrollment → reset paid_amount at enrollment level
+                enrollment.paid_amount = 0
+                enrollment.save(update_fields=["paid_amount"])
+
+                # Generate installments
+                generate_installments(enrollment)
+
+            # Redirect based on role
+            if getattr(request.user.profile, 'role', None) == 'student':
+                return redirect('student_dashboard')
+            else:
+                return redirect('dashboard')
+        else:
+            print(form.errors)
+    else:
+        form = EnrollmentForm(user=request.user)
+
+    return render(request, 'pages/enrollments.html', {
+        'form': form
+    })
 
 @login_required
 def enrollment_list(request):
@@ -472,8 +718,6 @@ def student_delete(request, pk):
         return redirect('student_list')
     return render(request, 'students/student_confirm_delete.html', {'student': student})
 
-@login_required
-@login_required
 @login_required
 def send_lesson(request, lesson_id=None):
     user = request.user
@@ -760,12 +1004,16 @@ def add_student(request):
         form = StudentForm()  
 
     return render(request, 'pages/create_student.html', {'form': form})
+
+
 def batch_fee(request, batch_id):
-    try:
-        batch = Batch.objects.get(pk=batch_id)
-        return JsonResponse({'fee': batch.fee})
-    except Batch.DoesNotExist:
-        return JsonResponse({'fee': None})
+    batch = get_object_or_404(Batch, pk=batch_id)
+    return JsonResponse({
+        'fee': batch.fee,
+        'start_date': batch.start_date.isoformat(),  # e.g., '2025-08-25'
+        'end_date': batch.end_date.isoformat()
+    })
+
 
 def charts(request):
     return render(request, 'charts.html')
@@ -807,7 +1055,7 @@ def home_redirect(request):
         return redirect('login')
 
     if request.user.is_superuser:
-        return redirect('dashboard')
+        return redirect('admin_analytics')
 
     role = getattr(request.user.profile, 'role', None)
     if role == 'student':

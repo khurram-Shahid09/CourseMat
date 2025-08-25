@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Installments Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        overflow-x: hidden;
+    }
+    .paid { background-color: #d4edda; }
+    .pending { background-color: #f8d7da; }
+    .enrollment-card {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        word-wrap: break-word;
+    }
+    .enrollment-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    table { table-layout: fixed; word-wrap: break-word; }
+    .table th, .table td { vertical-align: middle; overflow-wrap: break-word; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4 text-black-50">
+    <h3 style="color: #0d6efd">Installments Management</h3>
+
+    <!-- Filter Row -->
+    <form method="get" class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="search" value="{{ request.GET.search }}"
+                       class="form-control" placeholder="Search by Student Name/Email">
+            </div>
+            <div class="col-md-2">
+                <select name="course" class="form-control">
+                    <option value="">All Courses</option>
+                    {% for course in courses %}
+                    <option value="{{ course.id }}" {% if request.GET.course == course.id|stringformat:"s" %}selected{% endif %}>
+                        {{ course.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="batch" class="form-control">
+                    <option value="">All Batches</option>
+                    {% for batch in batches %}
+                    <option value="{{ batch.id }}" {% if request.GET.batch == batch.id|stringformat:"s" %}selected{% endif %}>
+                        {{ batch.batch_code }} ({{ batch.course.title }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="paid" {% if request.GET.status == "paid" %}selected{% endif %}>Paid</option>
+                    <option value="partial" {% if request.GET.status == "partial" %}selected{% endif %}>Partially Paid</option>
+                    <option value="pending" {% if request.GET.status == "pending" %}selected{% endif %}>Pending</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    {% for enrollment in enrollments %}
+    <div class="enrollment-card">
+        <div class="enrollment-header">
+            Student: {{ enrollment.student.name }} |
+            Batch: {{ enrollment.batch.batch_code|default:"N/A" }} |
+            Course: {% if enrollment.batch and enrollment.batch.course %}
+                {{ enrollment.batch.course.course_code }} ({{ enrollment.batch.course.title }})
+            {% else %}
+                N/A
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Due Date</th>
+                    <th>Amount</th>
+                    <th>Paid Amount</th>
+                    <th>Status</th>
+                    <th>Paid Date</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for installment in enrollment.installments.all %}
+                <tr class="{{ installment.status }}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ installment.due_date }}</td>
+                    <td>${{ installment.amount }}</td>
+                    <td>${{ installment.paid_amount }}</td>
+                    <td>{{ installment.status|capfirst }}</td>
+                    <td>
+    {% if installment.paid_date %}
+        {{ installment.paid_date|date:"Y-m-d" }}
+    {% else %}
+        -
+    {% endif %}
+</td>
+                    <td>
+                        {% if installment.status == 'pending' %}
+                        <form method="post" action="{% url 'mark_installment_paid' installment.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Mark Paid</button>
+                        </form>
+                        {% else %}
+                        <span class="text-success">Paid</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No installments found.</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center mt-3">
+        No enrollments found.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

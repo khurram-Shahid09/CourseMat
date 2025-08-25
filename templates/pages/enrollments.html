@@ -4,6 +4,8 @@
 {% block title %}Add Enrollment{% endblock %}
 
 {% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
 <style>
     .forms-sample label {
         color: #000000;
@@ -19,12 +21,78 @@
     .card {
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
 
     .readonly-input {
         background-color: #e9ecef;
         cursor: not-allowed;
+    }
+
+    .installments-preview {
+        margin-top: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        background: #f8f9fa;
+    }
+
+    .installments-preview h6 {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .installments-preview table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .installments-preview table th, .installments-preview table td {
+        border: 1px solid #dee2e6;
+        padding: 6px;
+        text-align: center;
+    }
+
+    /* Select2 Styling */
+    .select2-container .select2-selection--single {
+        height: 45px;
+        padding: 6px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        color: #000;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 100%;
+        right: 10px;
+    }
+
+    .select2-container--default .select2-results__option {
+        color: #000;
+        padding: 6px 12px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 6px 10px;
+        width: 100%;
+        font-size: 14px;
+        outline: none;
+        margin-bottom: 6px;
     }
 </style>
 {% endblock %}
@@ -61,29 +129,38 @@
                 <form class="forms-sample" method="post">
                     {% csrf_token %}
 
+                    <!-- Student -->
                     <div class="form-group">
-                        <label for="student_field">Student</label>
+                        <label for="student_field" class="text-dark">Student</label>
                         {% if request.user.profile.role == 'student' %}
-                        <input type="text" class="form-control readonly-input" value="{{ request.user.student.name }}" readonly>
+                        <input type="text" class="form-control readonly-input" value="{{ request.user.student.name }}"
+                               readonly>
                         <input type="hidden" name="student" value="{{ request.user.student.id }}">
                         {% else %}
-                        {{ form.student|add_class:"form-control" }}
+                        {{ form.student|add_class:"form-control select2"|attr:"data-placeholder:Select Student" }}
                         {% if form.student.errors %}
                         <div class="text-danger">{{ form.student.errors }}</div>
                         {% endif %}
                         {% endif %}
                     </div>
 
+                    <!-- Batch -->
                     <div class="form-group">
-                        <label for="{{ form.batch.id_for_label }}">Batch</label>
-                        {{ form.batch|add_class:"form-control" }}
+                        <label for="{{ form.batch.id_for_label }}" class="text-dark">Batch</label>
+                        {% if request.user.profile.role == 'student' %}
+                        <input type="text" class="form-control readonly-input" value="" readonly>
+                        <input type="hidden" name="batch" value="">
+                        {% else %}
+                        {{ form.batch|add_class:"form-control select2"|attr:"data-placeholder:Select Batch" }}
                         {% if form.batch.errors %}
                         <div class="text-danger">{{ form.batch.errors }}</div>
                         {% endif %}
+                        {% endif %}
                     </div>
 
+                    <!-- Batch Fee -->
                     <div class="form-group">
-                        <label for="id_batch_fee">Batch Fee (Total Course Fee)</label>
+                        <label for="id_batch_fee" class="text-dark">Batch Fee (Total Course Fee)</label>
                         {% if request.user.profile.role == 'student' %}
                         <input type="number" id="id_batch_fee" class="form-control readonly-input" readonly>
                         {% else %}
@@ -91,20 +168,9 @@
                         {% endif %}
                     </div>
 
+                    <!-- Fee Type (moved above Paid Fee) -->
                     <div class="form-group">
-                        <label for="{{ form.paid_amount.id_for_label }}">Paid Amount</label>
-                        {% if request.user.profile.role == 'student' %}
-                        <input type="number" id="id_paid_amount" name="paid_amount" class="form-control readonly-input" readonly>
-                        {% else %}
-                        {{ form.paid_amount|add_class:"form-control" }}
-                        {% if form.paid_amount.errors %}
-                        <div class="text-danger">{{ form.paid_amount.errors }}</div>
-                        {% endif %}
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ form.fee_type.id_for_label }}">Fee Type</label>
+                        <label for="{{ form.fee_type.id_for_label }}" class="text-dark">Fee Type</label>
                         {% if request.user.profile.role == 'student' %}
                         <input type="text" class="form-control readonly-input" value="One-time" readonly>
                         <input type="hidden" name="fee_type" value="one-time">
@@ -116,8 +182,40 @@
                         {% endif %}
                     </div>
 
+                    <!-- Paid Amount (show only for one-time/custom) -->
+                    <div class="form-group" id="paid-amount-group">
+                        <label for="{{ form.paid_amount.id_for_label }}" class="text-dark">Paid Amount</label>
+                        {% if request.user.profile.role == 'student' %}
+                        <input type="number" id="id_paid_amount" name="paid_amount" class="form-control readonly-input"
+                               readonly>
+                        {% else %}
+                        {{ form.paid_amount|add_class:"form-control" }}
+                        {% if form.paid_amount.errors %}
+                        <div class="text-danger">{{ form.paid_amount.errors }}</div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Installments Preview (hidden by default) -->
+                    <div class="installments-preview d-none" id="installments-preview">
+                        <h6 style="color:black;">Installment Plan</h6>
+                        <table>
+                            <thead style="color: black">
+                            <tr>
+                                <th>#</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody id="installments-body" , style="color:#000;">
+                            <!-- dynamically filled -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Status -->
                     <div class="form-group">
-                        <label for="{{ form.status.id_for_label }}">Status</label>
+                        <label for="{{ form.status.id_for_label }}" class="text-dark">Status</label>
                         {% if request.user.profile.role == 'student' %}
                         <input type="text" class="form-control readonly-input" value="enrolled" readonly>
                         <input type="hidden" name="status" value="enrolled">
@@ -139,45 +237,97 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function () {
-    const batchSelect = $("#id_batch");
-    const batchFeeInput = $("#id_batch_fee");
-    const paidInput = $("#id_paid_amount");
+    $(document).ready(function () {
+        $('.select2').select2({width: '100%'});
 
-    function updateFee() {
-        const batchId = batchSelect.val();
-        if (!batchId) {
-            batchFeeInput.val("");
-            paidInput.val("");
-            return;
-        }
+        const batchSelect = $("#id_batch");
+        const batchFeeInput = $("#id_batch_fee");
+        const paidInput = $("#id_paid_amount");
+        const feeTypeSelect = $("#id_fee_type");
+        const installmentsPreview = $("#installments-preview");
+        const installmentsBody = $("#installments-body");
+        const paidGroup = $("#paid-amount-group");
 
-        const url = "{% url 'batch_fee' 0 %}".replace("0", batchId);
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
+        // Update fee and get batch start/end dates when batch changes
+        function updateFee() {
+            const batchId = batchSelect.val();
+            if (!batchId) {
+                batchFeeInput.val("");
+                paidInput.val("");
+                return;
+            }
+            const url = "{% url 'batch_fee' 0 %}".replace("0", batchId);
+            $.getJSON(url, function (data) {
                 if (data.fee !== undefined) {
-                    // Update total batch fee
                     batchFeeInput.val(data.fee);
-
-                    // For students, prefill paid amount as total fee
                     if (paidInput.hasClass("readonly-input")) {
                         paidInput.val(data.fee);
                     }
                 }
-            },
-            error: function () {
-                batchFeeInput.val("");
-                paidInput.val("");
-            }
-        });
-    }
+                // store start/end dates as data attributes for installments
+                batchSelect.data('start-date', data.start_date);
+                batchSelect.data('end-date', data.end_date);
+                updateFormByFeeType();
+            });
+        }
 
-    updateFee();
-    batchSelect.on("change", updateFee);
-});
+        // Calculate months between two dates
+        function monthsBetween(start, end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            return (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+                (endDate.getMonth() - startDate.getMonth()) + 1;
+        }
+
+        // Generate installments dynamically based on batch start/end
+        function generateInstallments(totalFee) {
+            installmentsBody.empty();
+            const startDate = batchSelect.data('start-date');
+            const endDate = batchSelect.data('end-date');
+            if (!totalFee || !startDate || !endDate) return;
+
+            const months = monthsBetween(startDate, endDate);
+            const installmentAmount = Math.floor(totalFee / months);
+            const remainder = totalFee % months;
+
+            for (let i = 0; i < months; i++) {
+                const dueDate = new Date(startDate);
+                dueDate.setMonth(dueDate.getMonth() + i);
+                const amount = installmentAmount + (i === months - 1 ? remainder : 0);
+
+                installmentsBody.append(`
+    <tr>
+        <td>${i + 1}</td>
+        <td>${dueDate.toISOString().split('T')[0]}</td>
+        <td>$${amount}</td>
+    </tr>
+`);
+
+            }
+        }
+
+        // Handle fee type change
+        function updateFormByFeeType() {
+            const feeType = feeTypeSelect.val();
+            const totalFee = parseInt(batchFeeInput.val()) || 0;
+
+            if (feeType === "installment") {
+                paidGroup.hide();
+                installmentsPreview.removeClass("d-none");
+                generateInstallments(totalFee);
+            } else {
+                installmentsPreview.addClass("d-none");
+                paidGroup.show();
+            }
+        }
+
+        batchSelect.on("change", updateFee);
+        feeTypeSelect.on("change", updateFormByFeeType);
+
+        updateFee();
+    });
 </script>
 {% endblock %}

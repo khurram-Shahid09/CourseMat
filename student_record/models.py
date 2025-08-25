@@ -137,17 +137,23 @@ class Enrollment(models.Model):
 
         # Auto-create installments if fee_type is 'installment'
         if self.fee_type == 'installment' and not self.installments.exists():
-            num_months = 3
-            installment_amount = self.fee_at_enrollment // num_months
-            for i in range(num_months):
-                due_date = self.batch.start_date + relativedelta(months=i)
-                Installment.objects.create(
-                    enrollment=self,
-                    due_date=due_date,
-                    amount=installment_amount,
-                    paid_amount=0,
-                    status='pending'
-                )
+            # Compute total months between start and end date
+            start = self.batch.start_date
+            end = self.batch.end_date
+            total_months = (end.year - start.year) * 12 + (end.month - start.month)
+
+            # Only create installments if duration >= 1 month
+            if total_months >= 1:
+                installment_amount = self.fee_at_enrollment // total_months
+                for i in range(total_months):
+                    due_date = start + relativedelta(months=i)
+                    Installment.objects.create(
+                        enrollment=self,
+                        due_date=due_date,
+                        amount=installment_amount,
+                        paid_amount=0,
+                        status='pending'
+                    )
 
     @property
     def pending_amount(self):
@@ -222,10 +228,15 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
-#
-# class Installment(models.Model):
-#     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, related_name="installments")
-#     due_date = models.DateField()
-#     amount = models.PositiveBigIntegerField()
-#     paid_amount = models.PositiveBigIntegerField(default=0)
-#     status = models.CharField(max_length=20, choices=[('pending','Pending'), ('paid','Paid')])
+
+class Installment(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, related_name="installments")
+    due_date = models.DateField()
+    amount = models.PositiveBigIntegerField()
+    paid_amount = models.PositiveBigIntegerField(default=0)
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('paid', 'Paid')])
+    paid_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.enrollment} - {self.amount} ({self.status})"
+

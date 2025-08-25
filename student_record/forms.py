@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.contrib.auth.models import User
 
+
 class StudentForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         required=False,
@@ -44,6 +45,10 @@ class CourseForm(forms.ModelForm):
             field.widget.attrs.update({'class': 'form-control'})
 
 
+from django import forms
+from datetime import date
+from .models import Enrollment, Batch
+
 
 class EnrollmentForm(forms.ModelForm):
     fee_at_enrollment = forms.IntegerField(
@@ -79,14 +84,13 @@ class EnrollmentForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
 
-        # Students cannot edit fee_at_enrollment, paid_amount, or fee_type
         if self.user and getattr(self.user.profile, 'role', None) == 'student':
             self.fields['fee_at_enrollment'].widget.attrs['readonly'] = True
             self.fields['paid_amount'].widget.attrs['readonly'] = True
             self.fields['fee_type'].widget.attrs['disabled'] = True
 
-        # Set initial fee if batch is pre-selected
-        batch_id = self.data.get('batch') or (self.instance.batch.id if self.instance.pk and self.instance.batch else None)
+        batch_id = self.data.get('batch') or (
+            self.instance.batch.id if self.instance.pk and self.instance.batch else None)
         if batch_id:
             try:
                 batch = Batch.objects.get(pk=int(batch_id))
@@ -97,16 +101,14 @@ class EnrollmentForm(forms.ModelForm):
     def save(self, commit=True):
         enrollment = super().save(commit=False)
         if enrollment.batch:
-            # Ensure fee_at_enrollment is correct
             enrollment.fee_at_enrollment = enrollment.batch.fee
-
-        else:
-         enrollment.pending_amount = enrollment.fee_at_enrollment - (enrollment.paid_amount or 0)
-
+        if enrollment.fee_type == 'installment':
+            enrollment.paid_amount = 0
         if commit:
             enrollment.save()
             self.save_m2m()
         return enrollment
+
 
 class EnrollmentFeeForm(forms.ModelForm):
     class Meta:
@@ -132,6 +134,7 @@ class TeacherForm(forms.ModelForm):
         for name, field in self.fields.items():
             if name != 'courses':
                 field.widget.attrs.update({'class': 'form-control'})
+
 
 class BatchForm(forms.ModelForm):
     class Meta:
@@ -268,7 +271,8 @@ class LessonForm(forms.ModelForm):
                 self.fields['students'].disabled = True
 
         # Dynamically populate students if batch selected (for admin/teacher)
-        batch_id = self.data.get('batch') or (self.instance.batch.id if self.instance.pk and self.instance.batch else None)
+        batch_id = self.data.get('batch') or (
+            self.instance.batch.id if self.instance.pk and self.instance.batch else None)
         if batch_id:
             try:
                 batch = Batch.objects.get(pk=batch_id)
@@ -276,12 +280,11 @@ class LessonForm(forms.ModelForm):
             except Batch.DoesNotExist:
                 self.fields['students'].queryset = Student.objects.none()
 
-
-
     class LessonImageForm(forms.ModelForm):
-     class Meta:
-        model = LessonImage
-        fields = ['image']
+        class Meta:
+            model = LessonImage
+            fields = ['image']
+
 
 ROLE_CHOICES = (
     ('', 'All Roles'),
@@ -292,8 +295,9 @@ ROLE_CHOICES = (
 
 
 class UserFilterForm(forms.Form):
-    name_or_email = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Search by name/email'}))
-    role = forms.ChoiceField(choices=ROLE_CHOICES, required=False, widget=forms.Select(attrs={'class':'form-control'}))
+    name_or_email = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Search by name/email'}))
+    role = forms.ChoiceField(choices=ROLE_CHOICES, required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
 
 class UserRoleForm(forms.ModelForm):

@@ -23,34 +23,6 @@
     margin-bottom: 10px;
     color: #0d47a1;
 }
-.lesson-content {
-    max-height: 150px;
-    overflow: hidden;
-    cursor: pointer;
-    line-height: 1.5;
-    color: #2c3e50;
-    transition: max-height 0.4s ease;
-}
-.lesson-content.expanded {
-    max-height: none;
-}
-.lesson-images {
-    margin-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.lesson-images img {
-    border-radius: 10px;
-    max-height: 140px;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.lesson-images img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
 .lesson-meta-info {
     margin-top: 15px;
     font-size: 0.85rem;
@@ -69,55 +41,89 @@
     display: flex;
     gap: 10px;
 }
-.lesson-card-buttons a {
+.lesson-card-buttons a,
+.lesson-card-buttons button {
     text-decoration: none;
 }
-.forms-sample .form-group label {
-    font-weight: 600;
-    color: #222;
-}
-.forms-sample .btn {
-    min-width: 110px;
-    font-weight: 600;
-}
-#imageModal {
+.modal-custom {
     display: none;
     position: fixed;
     z-index: 9999;
-    padding-top: 60px;
+    padding-top: 30px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
     overflow: auto;
-    background-color: rgba(0,0,0,0.9);
 }
-#imageModal img {
+.modal-content-custom {
+    background: #fff;
     margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 90%;
+    padding: 25px 30px;
+    border-radius: 16px;
+    width: 95%;
+    max-width: 850px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    animation: fadeIn 0.3s ease-in-out;
 }
-#imageModal .close {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #fff;
-    font-size: 40px;
+.modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+}
+.modal-header-custom h4 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0d47a1;
+}
+.modal-close {
+    font-size: 34px;
     font-weight: bold;
     cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
 }
-@media (max-width: 576px) {
-    .lesson-meta-info {
-        flex-direction: column;
-        gap: 5px;
-    }
-    .forms-sample .row.g-2 > .col-auto {
-        width: 100%;
-    }
+.modal-close:hover {
+    color: #e53935;
 }
+.modal-body-custom {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+.modal-body-custom p {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+.modal-body-custom img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;  /* allow large but still contained */
+    object-fit: contain; /* show full image */
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s;
+}
+/*.modal-body-custom img:hover {*/
+/*    transform: scale(1.03);*/
+/*}*/
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="page-header mb-4">
     <h3 class="page-title">Lessons</h3>
@@ -126,16 +132,15 @@
 <div class="row justify-content-center mb-4">
   <div class="col-12">
     <form method="get" class="forms-sample row g-2 align-items-end">
-
       <div class="col-auto">
         <label>Batch</label>
-           {{ form.batch }}
+        {{ form.batch }}
       </div>
 
       <div class="col-auto">
         {% if request.user.profile.role == 'student' %}
           <label>Student</label>
-          <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled style="padding: .375rem .75rem; border-radius: .25rem; border: 1px solid #ced4da; height: calc(2.25rem + 2px);">
+          <input type="text" value="{{ request.user.student.name }}" class="form-control" disabled>
           <input type="hidden" name="student" value="{{ request.user.student.id }}">
         {% else %}
           {{ form.student.label_tag }}
@@ -147,7 +152,6 @@
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
         <a href="{% url 'lesson_list' %}" class="btn btn-light btn-sm">Reset</a>
       </div>
-
     </form>
   </div>
 </div>
@@ -158,48 +162,36 @@
       {% for lesson in lessons %}
         <div class="lesson-card">
           <div class="lesson-title">{{ lesson.title }}</div>
-          <div class="lesson-content" title="{{ lesson.content }}">{{ lesson.content }}</div>
 
-          {% if lesson.images.exists %}
-            <div class="lesson-images">
-              {% for img in lesson.images.all %}
-                {% if img.image %}
-                  <img src="{{ img.image.url }}" alt="Lesson Image" class="lesson-img">
-                {% endif %}
-              {% endfor %}
-            </div>
-          {% endif %}
+          <div class="lesson-meta-info">
+              {% if lesson.batch %}
+                  <span>Batch: {{ lesson.batch.batch_code }}</span>
+              {% endif %}
+              <span>By: {% if lesson.teacher %}{{ lesson.teacher.name }}{% else %}Admin{% endif %}</span>
+              {% if lesson.students.exists %}
+                  <span>Students: {{ lesson.students.count }}</span>
+              {% else %}
+                  <span>All Enrolled Students</span>
+              {% endif %}
+              <span>Created: {{ lesson.created_at|date:"Y-m-d H:i" }}</span>
+          </div>
 
-         <div class="lesson-meta-info">
-<!--    {% if lesson.course %}-->
-<!--        <span>Course: {{ lesson.course.course_code }} - {{ lesson.course.title }}</span>-->
-<!--    {% else %}-->
-<!--        <span>Course: Not assigned</span>-->
-<!--    {% endif %}-->
+          <div class="lesson-card-buttons">
+            <button class="btn btn-sm btn-info view-btn"
+                    data-title="{{ lesson.title }}"
+                    data-content="{{ lesson.content|escapejs }}"
+                    data-images="{% for img in lesson.images.all %}{{ img.image.url }},{% endfor %}">
+              View
+            </button>
 
-    {% if lesson.batch %}
-        <span>Batch: {{ lesson.batch.batch_code }}</span>
-    {% endif %}
-
-    <span>By: {% if lesson.teacher %}{{ lesson.teacher.name }}{% else %}Admin{% endif %}</span>
-    {% if lesson.students.exists %}
-        <span>Students: {{ lesson.students.count }}</span>
-    {% else %}
-        <span>All Enrolled Students</span>
-    {% endif %}
-    <span>Created: {{ lesson.created_at|date:"Y-m-d H:i" }}</span>
-</div>
-
-          {% if request.user.is_superuser or request.user.profile.role in "teacher admin" %}
-            <div class="lesson-card-buttons">
+            {% if request.user.is_superuser or request.user.profile.role in "teacher admin" %}
               <a href="{% url 'lesson_update' lesson.id %}" class="btn btn-sm btn-warning">Update</a>
               <form action="{% url 'lesson_delete' lesson.id %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this lesson?');">Delete</button>
               </form>
-            </div>
-          {% endif %}
-
+            {% endif %}
+          </div>
         </div>
       {% endfor %}
     {% else %}
@@ -208,39 +200,51 @@
   </div>
 </div>
 
-<div id="imageModal">
-  <span class="close">&times;</span>
-  <img id="modalImg" src="">
+<!-- Modal -->
+<div id="lessonModal" class="modal-custom">
+  <div class="modal-content-custom">
+    <div class="modal-header-custom">
+      <h4 id="modalTitle"></h4>
+      <span class="modal-close">&times;</span>
+    </div>
+    <div class="modal-body-custom">
+      <p id="modalContent"></p>
+      <div id="modalImages"></div>
+    </div>
+  </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.lesson-content').forEach(function(el) {
-        el.addEventListener('click', function() {
-            el.classList.toggle('expanded');
-        });
-    });
+    const modal = document.getElementById("lessonModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalContent = document.getElementById("modalContent");
+    const modalImages = document.getElementById("modalImages");
+    const closeBtn = modal.querySelector(".modal-close");
 
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImg");
-    const closeBtn = modal.querySelector(".close");
+    document.querySelectorAll(".view-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            modalTitle.textContent = this.dataset.title;
+            modalContent.textContent = this.dataset.content;
+            modalImages.innerHTML = "";
 
-    document.querySelectorAll(".lesson-images img").forEach(function(img) {
-        img.addEventListener("click", function() {
+            const imgs = this.dataset.images.split(",").filter(Boolean);
+            imgs.forEach(url => {
+                const img = document.createElement("img");
+                img.src = url.trim();
+                modalImages.appendChild(img);
+            });
+
             modal.style.display = "block";
-            modalImg.src = this.src;
         });
     });
 
     closeBtn.onclick = function() {
         modal.style.display = "none";
-        modalImg.src = "";
     };
-
     modal.onclick = function(e) {
         if (e.target === modal) {
             modal.style.display = "none";
-            modalImg.src = "";
         }
     };
 });

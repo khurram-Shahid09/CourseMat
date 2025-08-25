@@ -78,7 +78,7 @@ Courses List
                 <td>{{ course.course_code }}</td>
                 <td>{{ course.title }}</td>
                 <td class="description-cell">{{ course.description }}</td>
-                <td>{{ course.duration }} weeks</td>
+                <td>{{ course.duration }} months</td>
                 {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
                 <td>
                   <a href="{% url 'edit_course' course.id %}" class="btn btn-sm btn-warning btn-action">Edit</a>

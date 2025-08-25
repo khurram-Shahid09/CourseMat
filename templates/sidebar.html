@@ -6,7 +6,7 @@
     <!-- Dashboard -->
     <li class="nav-item">
       <a class="nav-link"
-         href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}{% elif request.user.profile.role == 'teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">
+         href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}{% elif request.user.profile.role == 'teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'admin_analytics' %}{% endif %}">
         <span class="icon-bg">
           <i class="mdi mdi-view-dashboard menu-icon"></i>
         </span>
@@ -234,6 +234,36 @@
     </div>
   </li>
 {% endif %}
+
+    {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+      <!-- Students Menu -->
+      <li class="nav-item">
+        <a class="nav-link"
+           data-toggle="collapse"
+           href="#management"
+           aria-expanded="{% if request.resolver_match.url_name == 'student_list' or request.resolver_match.url_name == 'basic_elements' %}true{% else %}false{% endif %}"
+           aria-controls="management">
+          <span class="icon-bg">
+            <i class="mdi mdi-account-multiple menu-icon"></i>
+          </span>
+          <span class="menu-title">Fee Management</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse {% if request.resolver_match.url_name == 'fee_management' or request.resolver_match.url_name == 'installments_list' %}show{% endif %}" id="management">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'fee_management' %}active{% endif %}" href="{% url 'fee_management' %}">Fee Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'installments_list' %}active{% endif %}" href="{% url 'installments_list' %}">Installments</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+    {% endif %}
+
   </ul>
+
 
 </nav>

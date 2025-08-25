@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block title %}Send Lesson{% endblock %}
 
 {% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
 
 /* Base styles */
@@ -153,7 +155,7 @@
     .card-body {
         padding: 1.5rem;
     }
-    
+
     .page-title {
         font-size: 1.5rem;
     }
@@ -163,7 +165,7 @@
     .card-body {
         padding: 1.25rem;
     }
-    
+
     .forms-sample input,
     .forms-sample textarea,
     .forms-sample select {
@@ -198,6 +200,47 @@
     padding: 10px;
 }
 
+/* Select2 Styling */
+.select2-container .select2-selection--single {
+    height: 45px;
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    color: #000;
+    background-color: #f8fafc;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 10px;
+}
+
+.select2-container--default .select2-results__option {
+    color: #000;
+    padding: 6px 12px;
+}
+
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #6366f1;
+    color: white;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 6px 10px;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 6px;
+}
 </style>
 {% endblock %}
 
@@ -231,7 +274,7 @@
 
           <div class="form-group">
             <label for="{{ form.batch.id_for_label }}">Batch</label>
-            {{ form.batch }}
+            {{ form.batch|add_class:"form-control select2"|attr:"data-placeholder:Select Batch" }}
             {% if form.batch.errors %}
               <div class="text-danger">{{ form.batch.errors }}</div>
             {% endif %}
@@ -268,10 +311,22 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
+
+    // Initialize Select2 for Batch dropdown
+    $('.select2').select2({
+        width: '100%',
+        placeholder: function(){
+            return $(this).data('placeholder');
+        },
+        allowClear: true
+    });
 
     var preselectedStudents = {% if selected_students %}{{ selected_students|safe }}{% else %}[] {% endif %};
 
@@ -355,4 +410,3 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
-
