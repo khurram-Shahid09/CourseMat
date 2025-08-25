@@ -1,13 +1,16 @@
 from datetime import date
-
 from django import forms
 from .models import Student, Course, Enrollment, Teacher, Lesson, LessonImage, Batch
 from django.core.exceptions import ValidationError
-from .models import Enrollment
 from django.utils import timezone
-from django.db.models import Count
 from django.contrib.auth.models import User
 
+ROLE_CHOICES = (
+    ('', 'All Roles'),
+    ('student', 'Student'),
+    ('teacher', 'Teacher'),
+    ('admin', 'Admin'),
+)
 
 class StudentForm(forms.ModelForm):
     date_of_birth = forms.DateField(
@@ -33,7 +36,6 @@ class StudentForm(forms.ModelForm):
             if field_name != 'date_of_birth':  # already set class for DOB
                 field.widget.attrs.update({'class': 'form-control'})
 
-
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
@@ -43,12 +45,6 @@ class CourseForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
-
-
-from django import forms
-from datetime import date
-from .models import Enrollment, Batch
-
 
 class EnrollmentForm(forms.ModelForm):
     fee_at_enrollment = forms.IntegerField(
@@ -109,7 +105,6 @@ class EnrollmentForm(forms.ModelForm):
             self.save_m2m()
         return enrollment
 
-
 class EnrollmentFeeForm(forms.ModelForm):
     class Meta:
         model = Enrollment
@@ -119,7 +114,6 @@ class EnrollmentFeeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
-
 
 class TeacherForm(forms.ModelForm):
     class Meta:
@@ -134,7 +128,6 @@ class TeacherForm(forms.ModelForm):
         for name, field in self.fields.items():
             if name != 'courses':
                 field.widget.attrs.update({'class': 'form-control'})
-
 
 class BatchForm(forms.ModelForm):
     class Meta:
@@ -191,7 +184,6 @@ class BatchForm(forms.ModelForm):
             batch.save()
         return batch
 
-
 class LessonFilterForm(forms.Form):
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(),
@@ -211,7 +203,6 @@ class LessonFilterForm(forms.Form):
         empty_label="All Students",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-
 
 class LessonForm(forms.ModelForm):
     batch = forms.ModelChoiceField(
@@ -285,20 +276,10 @@ class LessonForm(forms.ModelForm):
             model = LessonImage
             fields = ['image']
 
-
-ROLE_CHOICES = (
-    ('', 'All Roles'),
-    ('student', 'Student'),
-    ('teacher', 'Teacher'),
-    ('admin', 'Admin'),
-)
-
-
 class UserFilterForm(forms.Form):
     name_or_email = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Search by name/email'}))
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=False, widget=forms.Select(attrs={'class': 'form-control'}))
-
 
 class UserRoleForm(forms.ModelForm):
     class Meta:

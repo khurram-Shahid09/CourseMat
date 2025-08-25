@@ -1,38 +1,40 @@
-from django import forms
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Count, Prefetch
-from .decorator import role_required
-from .models import Course, Enrollment, Student, Teacher, Lesson, Profile, Batch, Installment
-from .forms import StudentForm, CourseForm, EnrollmentForm, TeacherForm, LessonForm, LessonFilterForm, LessonImage, \
-    BatchForm, UserRoleForm, UserFilterForm, EnrollmentFeeForm
-from django.contrib import messages
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Lesson, Course, Student
-from .forms import LessonFilterForm
-from django.contrib.auth.decorators import login_required,user_passes_test
-from django.db.models import Count
-from django.shortcuts import render
-from django.utils.timezone import now
-from datetime import timedelta
-from django.utils import timezone
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from datetime import date
-from django.shortcuts import render
-from django.db.models import Count, Sum, F
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.db.models import Count, Sum, Q, F, Prefetch
+from django.http import HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.timezone import now
+from .decorator import role_required
+from .forms import (
+    BatchForm,
+    CourseForm,
+    EnrollmentFeeForm,
+    EnrollmentForm,
+    LessonFilterForm,
+    LessonForm,
+    LessonImage,
+    StudentForm,
+    TeacherForm,
+    UserFilterForm,
+    UserRoleForm,
+)
+from .models import (
+    Batch,
+    Course,
+    Enrollment,
+    Installment,
+    Lesson,
+    Profile,
+    Student,
+    Teacher,
+)
 
-from django.shortcuts import render
-from django.utils import timezone
-from datetime import datetime
-from django.db.models import Count, Sum
-from .models import Student, Course, Batch, Enrollment, Installment
-
-
+@role_required('admin')
 def admin_analytics(request):
     today = timezone.now().date()
     start_date = request.GET.get('start_date')
@@ -78,7 +80,6 @@ def admin_analytics(request):
         enrolled_on__month=today.month
     ).count()
 
-    # ✅ Fee from installments instead of enrollments
     total_fee_collected = installments.aggregate(total=Sum('paid_amount'))['total'] or 0
     total_pending_fee = installments.aggregate(total=Sum('amount'))['total'] or 0
     total_pending_fee -= total_fee_collected
@@ -104,7 +105,6 @@ def admin_analytics(request):
         enrollments_data.append(count)
         months.append(month.strftime("%b %Y"))
 
-        # ✅ Fee from installments
         month_installments = Installment.objects.filter(due_date__gte=month_start, due_date__lte=month_end)
         collected.append(month_installments.aggregate(Sum('paid_amount'))['paid_amount__sum'] or 0)
         pending_amount = month_installments.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -214,6 +214,237 @@ def dashboard(request):
     }
     return render(request, 'pages/dashboard.html', context)
 
+@login_required
+def teacher_dashboard(request):
+    teacher = Teacher.objects.get(email=request.user.email)
+    batches = Batch.objects.filter(teacher=teacher).select_related('course')
+    total_batches_count = batches.count()
+    courses = Course.objects.filter(batches__teacher=teacher).distinct()
+    total_courses_count = courses.count()
+    students = Student.objects.filter(
+        enrollments__batch__in=batches
+    ).distinct()
+    total_students_count = students.count()
+    recent_lessons = Lesson.objects.filter(teacher=teacher).order_by('-created_at')[:5]
+    total_lessons_count = Lesson.objects.filter(teacher=teacher).count()
+    batch_stats = batches.annotate(
+        students_count=Count('enrollments')
+    ).order_by('-students_count')
+
+    context = {
+        "total_courses_count": total_courses_count,
+        "total_batches_count": total_batches_count,
+        "total_students_count": total_students_count,
+        "total_lessons_count": total_lessons_count,
+        "recent_lessons": recent_lessons,
+        "my_courses": courses,
+        "my_batches": batches,
+        "my_students": students,
+        "batch_stats": batch_stats,
+    }
+    return render(request, "pages/teacher_dashboard.html", context)
+
+def student_dashboard(request):
+    student = Student.objects.get(user=request.user)
+
+    all_enrollments = Enrollment.objects.select_related(
+        'batch', 'batch__course', 'batch__teacher'
+    ).filter(student=student).order_by('-enrolled_on')
+
+    completed_course_ids = all_enrollments.filter(status='completed')\
+                                         .values_list('batch__course_id', flat=True)
+
+    pending_lessons_count = Lesson.objects.filter(
+        course__in=all_enrollments.values_list('batch__course', flat=True)
+    ).exclude(
+        students=student
+    ).count()
+    my_enrollments = all_enrollments[:5]
+
+    batch_progress = []
+    for enrollment in my_enrollments:
+        total_lessons = Lesson.objects.filter(course=enrollment.batch.course).count()
+        completed_lessons = Lesson.objects.filter(
+            course=enrollment.batch.course,
+            students=student
+        ).count()
+
+        batch_progress.append({
+            'batch_number': enrollment.roll_number,
+            'course_title': enrollment.batch.course.title,
+            'status': enrollment.status.capitalize(),
+            'start_date': enrollment.batch.start_date,
+            'completed_lessons': completed_lessons,
+            'total_lessons': total_lessons,
+        })
+
+    context = {
+        'my_enrollments_count': all_enrollments.count(),
+        'completed_courses_count': all_enrollments.filter(status='completed').count(),
+        'pending_lessons_count': pending_lessons_count,
+        'my_recent_enrollments': my_enrollments,
+        'batch_progress': batch_progress,
+    }
+
+    return render(request, 'pages/student_dashboard.html', context)
+
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remember = request.POST.get('remember')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            if not remember:
+                request.session.set_expiry(0)
+
+            return redirect('home')
+        else:
+            return redirect('login')
+
+    return render(request, 'pages/login.html')
+
+def home_redirect(request):
+    if request.user.is_anonymous:
+        return redirect('login')
+
+    if request.user.is_superuser:
+        return redirect('admin_analytics')
+
+    role = getattr(request.user.profile, 'role', None)
+    if role == 'student':
+        return redirect('student_dashboard')
+    elif role == 'teacher':
+        return redirect('teacher_dashboard')
+    else:
+        return redirect('login')
+
+def register(request):
+    credentials = None
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        age = request.POST.get("age")
+        phone_number = request.POST.get("phone_number")
+        date_of_birth = request.POST.get("date_of_birth")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        if password1 != password2:
+            return redirect('register')
+
+        if User.objects.filter(email=email).exists():
+            return redirect('register')
+
+        # Create username from email
+        username = email.split('@')[0]
+
+        # Create User
+        user = User.objects.create_user(username=username, email=email, password=password1)
+
+        # Create Profile with role='student'
+        Profile.objects.create(
+            user=user,
+            full_name=name,
+            role='student'
+        )
+
+        # Optionally create Student record if you keep Student model
+        Student.objects.create(
+            user=user,
+            name=name,
+            age=age,
+            email=email,
+            phone_number=phone_number,
+            date_of_birth=date_of_birth,
+        )
+
+        credentials = {'username': username, 'password': password1}
+
+    return render(request, 'pages/register.html', {
+        'credentials': credentials
+    })
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, 'pages/student_list.html', {'students': students})
+
+def student_create(request):
+    credentials = None
+
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            email = form.cleaned_data["email"]
+            age = form.cleaned_data["age"]
+            phone_number = form.cleaned_data["phone_number"]
+            date_of_birth = form.cleaned_data["date_of_birth"]
+            username = email.split("@")[0]
+            password = f"{username}123"
+            if User.objects.filter(email=email).exists():
+                return render(request, "pages/create_student.html", {"form": form})
+            try:
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password
+                )
+                Profile.objects.create(
+                    user=user,
+                    full_name=name,
+                    role="student"
+                )
+                Student.objects.create(
+                    user=user,
+                    name=name,
+                    age=age,
+                    email=email,
+                    phone_number=phone_number,
+                    date_of_birth=date_of_birth,
+                )
+
+                credentials = {"username": username, "password": password}
+
+                return render(request, "pages/create_student.html", {
+                    "form": StudentForm(),
+                    "credentials": credentials
+                })
+            except Exception as e:
+                return render(request, "pages/create_student.html", {"form": form})
+    else:
+        form = StudentForm()
+
+    return render(request, "pages/create_student.html", {"form": form})
+
+def student_edit(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('student_list')
+    else:
+        form = StudentForm(instance=student)
+    return render(request, 'pages/create_student.html', {'form': form})
+
+def student_delete(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == "POST":
+        student.delete()
+        return redirect('student_list')
+    return render(request, 'students/student_confirm_delete.html', {'student': student})
+
+@role_required('admin')
 def user_list(request):
     form = UserFilterForm(request.GET or None)
     users = User.objects.select_related('profile').all().order_by('username')
@@ -240,8 +471,7 @@ def user_update_role(request, pk):
         if role:
             user.profile.role = role
             user.profile.save()
-           # messages.success(request, f"Role updated to {role} for {user.username}")
-        return redirect("user_list")  # adjust to your users list page name
+        return redirect("user_list")
 
     return render(request, "pages/user_update_role.html", {"user": user})
 
@@ -249,81 +479,12 @@ def user_delete(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         user.delete()
-       # messages.success(request, f"{user.username} deleted successfully")
         return redirect('user_list')
     return render(request, 'pages/user_delete_confirm.html', {'user': user})
-
-
-def index(request):
-    return render(request, 'student_record/index.html')
 
 def basic_elements(request):
     return render(request, "content.html")
 
-def student_list(request):
-    students = Student.objects.all()
-    return render(request, 'pages/student_list.html', {'students': students})
-
-
-def student_create(request):
-    credentials = None
-
-    if request.method == "POST":
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data["name"]
-            email = form.cleaned_data["email"]
-            age = form.cleaned_data["age"]
-            phone_number = form.cleaned_data["phone_number"]
-            date_of_birth = form.cleaned_data["date_of_birth"]
-
-            # Create username from email
-            username = email.split("@")[0]
-            password = f"{username}123"   # auto-generated
-
-            if User.objects.filter(email=email).exists():
-                #messages.error(request, "A user with this email already exists.")
-                return render(request, "pages/create_student.html", {"form": form})
-
-            try:
-                # Create User
-                user = User.objects.create_user(
-                    username=username,
-                    email=email,
-                    password=password
-                )
-
-                # Create Profile with role 'student'
-                Profile.objects.create(
-                    user=user,
-                    full_name=name,
-                    role="student"
-                )
-
-                # Create Student record
-                Student.objects.create(
-                    user=user,
-                    name=name,
-                    age=age,
-                    email=email,
-                    phone_number=phone_number,
-                    date_of_birth=date_of_birth,
-                )
-
-                credentials = {"username": username, "password": password}
-               # messages.success(request, "Student created successfully!")
-
-                return render(request, "pages/create_student.html", {
-                    "form": StudentForm(),
-                    "credentials": credentials
-                })
-            except Exception as e:
-                #messages.error(request, f"Error creating student: {e}")
-                return render(request, "pages/create_student.html", {"form": form})
-    else:
-        form = StudentForm()
-
-    return render(request, "pages/create_student.html", {"form": form})
 
 def teacher_create(request):
     credentials = None
@@ -333,38 +494,29 @@ def teacher_create(request):
         if form.is_valid():
             teacher = form.save(commit=False)
 
-            # If no user exists, create one
+
             if not hasattr(teacher, 'user') or not teacher.user:
                 email = form.cleaned_data['email']
                 name = form.cleaned_data['name']
-
-                # generate username from email
                 username = email.split('@')[0]
-
-                # generate default password
                 password = username + "123"
-
-                # create user
                 user = User.objects.create_user(
                     username=username,
                     email=email,
                     password=password
                 )
 
-                # create profile with role 'teacher'
                 Profile.objects.create(
                     user=user,
                     full_name=name,
                     role='teacher'
                 )
 
-                # link teacher with user
                 teacher.user = user
 
                 credentials = {'username': username, 'password': password}
 
             teacher.save()
-            #messages.success(request, "Teacher created successfully!")
             return render(request, 'pages/create_teacher.html', {
                 'form': TeacherForm(),
                 'credentials': credentials
@@ -372,9 +524,8 @@ def teacher_create(request):
     else:
         form = TeacherForm()
 
-    return render(request, 'pages/create_teacher.html', {'form': form}) # should be TeacherForm, not StudentForm
-
     return render(request, 'pages/create_teacher.html', {'form': form})
+
 def teacher_delete(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
     if request.method == 'POST':
@@ -384,9 +535,11 @@ def teacher_delete(request, pk):
     else:
         messages.error(request, 'Invalid request method.')
         return redirect('teacher_list')
+
 def teacher_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'pages/teacher_list.html', {'teachers': teachers})
+
 def teacher_edit(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
 
@@ -394,15 +547,11 @@ def teacher_edit(request, pk):
         form = TeacherForm(request.POST, instance=teacher)
         if form.is_valid():
             form.save()
-            return redirect('teacher_list')  # redirect to teacher list after save
+            return redirect('teacher_list')
     else:
-        form = TeacherForm(instance=teacher)  # important to prefill values
+        form = TeacherForm(instance=teacher)
 
     return render(request, 'pages/create_teacher.html', {'form': form, 'edit': True})
-
-def course_list(request):
-    courses = Course.objects.all()
-    return render(request, 'pages/course_list.html', {'courses': courses})
 
 def course_create(request):
     if request.method == 'POST':
@@ -414,13 +563,17 @@ def course_create(request):
         form = CourseForm()
     return render(request, 'course/course_form.html', {'form': form})
 
+def course_list(request):
+    courses = Course.objects.all()
+    return render(request, 'pages/course_list.html', {'courses': courses})
+
 @login_required
 def edit_course(request, course_id):
     if not (request.user.is_superuser or request.user.profile.role == 'admin'):
         return HttpResponseForbidden("You are not allowed to edit courses")
-    
+
     course = get_object_or_404(Course, id=course_id)
-    
+
     if request.method == 'POST':
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
@@ -428,216 +581,127 @@ def edit_course(request, course_id):
             return redirect('course_list')
     else:
         form = CourseForm(instance=course)
-    
+
     return render(request, 'pages/add_course.html', {'form': form, 'title': 'Edit Course'})
 
 @login_required
 def delete_course(request, course_id):
     if not (request.user.is_superuser or request.user.profile.role == 'admin'):
         return HttpResponseForbidden("You are not allowed to delete courses")
-    
+
     course = get_object_or_404(Course, id=course_id)
     if request.method == 'POST':
         course.delete()
         return redirect('course_list')
-    
+
     return render(request, 'pages/course_list.html', {'course': course})
 
-
-def fee_management(request):
-    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
-        .prefetch_related('installments')
-
-    # ----- Apply filters -----
-    search = request.GET.get('search')
-    course_id = request.GET.get('course')
-    batch_id = request.GET.get('batch')
-    fee_type = request.GET.get('fee_type')
-    status = request.GET.get('status')
-
-    if search:
-        enrollments = enrollments.filter(
-            Q(student__name__icontains=search) |
-            Q(student__email__icontains=search)
-        )
-    if course_id:
-        enrollments = enrollments.filter(batch__course__id=course_id)
-    if batch_id:
-        enrollments = enrollments.filter(batch__id=batch_id)
-    if fee_type:
-        enrollments = enrollments.filter(fee_type=fee_type)
-
-    enrollments = list(enrollments)
-
-    # Compute total_fee, paid_amount, pending_amount for each enrollment
-    for e in enrollments:
-        if e.fee_type == 'installment':
-            e.total_fee = sum(inst.amount for inst in e.installments.all())
-            e.paid_amount_display = sum(inst.paid_amount for inst in e.installments.all())
-            e.pending_amount_display = e.total_fee - e.paid_amount_display
-        else:
-            e.total_fee = e.fee_at_enrollment
-            e.paid_amount_display = e.paid_amount
-            e.pending_amount_display = e.pending_amount
-
-    # ----- Filter by payment status -----
-    if status == "paid":
-        enrollments = [e for e in enrollments if e.pending_amount_display == 0]
-    elif status == "partial":
-        enrollments = [e for e in enrollments if 0 < e.paid_amount_display < e.total_fee]
-    elif status == "pending":
-        enrollments = [e for e in enrollments if e.paid_amount_display == 0]
-
-    # ----- Handle POST update -----
+def add_course(request):
     if request.method == 'POST':
-        enrollment_id = request.POST.get('enrollment_id')
-        enrollment = get_object_or_404(Enrollment, pk=enrollment_id)
-        form = EnrollmentFeeForm(request.POST, instance=enrollment)
+        form = CourseForm(request.POST)
         if form.is_valid():
-            enrollment = form.save()
-            if enrollment.fee_type == 'installment':
-                generate_installments(enrollment)
-            return redirect('fee_management')
-
-    courses = Course.objects.all()
-    batches = Batch.objects.all()
-
-    context = {
-        'enrollments': enrollments,
-        'courses': courses,
-        'batches': batches,
-    }
-    return render(request, 'pages/fee_management.html', context)
-
-
-
-def generate_installments(enrollment):
-    # Delete old installments if any
-    enrollment.installments.all().delete()
-
-    batch = enrollment.batch
-    start_date = batch.start_date
-    end_date = batch.end_date
-
-    # Calculate number of months between start and end
-    months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) + 1
-
-    if months <= 1:
-        # Only one installment if duration <= 1 month
-        enrollment.installments.create(
-            due_date=start_date,
-            amount=enrollment.fee_at_enrollment,
-            paid_amount=0,
-            status='pending'
-        )
+            form.save()
+            return redirect('course_list')
     else:
-        installment_amount = enrollment.fee_at_enrollment // months
-        remainder = enrollment.fee_at_enrollment % months
+        form = CourseForm()
+    return render(request, 'pages/add_course.html', {'form': form})
 
-        for i in range(months):
-            installment_date = start_date + relativedelta(months=i)
-            amount = installment_amount + (remainder if i == months - 1 else 0)
-
-            enrollment.installments.create(
-                due_date=installment_date,
-                amount=amount,
-                paid_amount=0,
-                status='pending'
-            )
-
-
-from django.db.models import Q, Prefetch, F
-from django.shortcuts import render
-from .models import Enrollment, Installment, Course, Batch
-
-def installments_list(request):
-    # Fetch enrollments with related student, batch, course, and installments
-    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
-        .prefetch_related(
-            Prefetch('installments', queryset=Installment.objects.order_by('due_date'))
-        )
-
-    # ----- Apply filters -----
-    search = request.GET.get('search')
-    course_id = request.GET.get('course')
-    batch_id = request.GET.get('batch')
-    fee_type = request.GET.get('fee_type')
-    status = request.GET.get('status')
-
-    if search:
-        enrollments = enrollments.filter(
-            Q(student__name__icontains=search) |
-            Q(student__email__icontains=search)
-        )
-
-    if course_id:
-        enrollments = enrollments.filter(batch__course__id=course_id)
-
-    if batch_id:
-        enrollments = enrollments.filter(batch__id=batch_id)
-
-    if fee_type:
-        enrollments = enrollments.filter(fee_type=fee_type)
-
-    # Only include enrollments that have at least 1 installment
-    enrollments = [e for e in enrollments if e.installments.exists()]
-
-    # Filter by installment payment status
-    if status:
-        filtered_enrollments = []
-        for e in enrollments:
-            total_installments = sum(inst.amount for inst in e.installments.all())
-            paid_installments = sum(inst.paid_amount for inst in e.installments.all())
-
-            if status == 'paid' and paid_installments >= total_installments:
-                filtered_enrollments.append(e)
-            elif status == 'pending' and paid_installments == 0:
-                filtered_enrollments.append(e)
-            elif status == 'partial' and 0 < paid_installments < total_installments:
-                filtered_enrollments.append(e)
-        enrollments = filtered_enrollments
-
-    # Pass all courses and batches for filter dropdowns
-    courses = Course.objects.all()
-    batches = Batch.objects.all()
-
-    context = {
-        'enrollments': enrollments,
-        'courses': courses,
-        'batches': batches,
-        'request': request,  # so template can keep filter values
-    }
-
-    return render(request, 'pages/installments_list.html', context)
-
-
-
-
-def mark_installment_paid(request, installment_id):
-    installment = get_object_or_404(Installment, id=installment_id)
+@role_required('admin')
+def create_batch(request):
     if request.method == 'POST':
-        installment.status = 'paid'
-        installment.paid_amount = installment.amount
-        installment.paid_date = timezone.now().date()
-        installment.save()
-        #messages.success(request, f'Installment for {installment.enrollment.student.name} marked as paid.')
-    return redirect('installments_list')
+        form = BatchForm(request.POST)
+        if form.is_valid():
+            batch = form.save()
+            return redirect('batch_list')
+        else:
+            print(form.errors)
+    else:
+        form = BatchForm()
+
+    return render(request, 'pages/create_batch.html', {'form': form})
+
+@role_required('admin')
+def batch_list(request):
+    batches = Batch.objects.select_related('course', 'teacher').order_by('course__title', 'number')
+    context = {
+        'batches': batches,
+        'today': timezone.now().date(),
+    }
+    return render(request, 'pages/batch_list.html', context)
+
+@role_required('admin')
+def batch_edit(request, batch_id):
+    batch = get_object_or_404(Batch, pk=batch_id)
+    if request.method == 'POST':
+        form = BatchForm(request.POST, instance=batch)
+        if form.is_valid():
+            form.save()
+            return redirect('batch_list')
+    else:
+        form = BatchForm(instance=batch)
+    return render(request, 'pages/create_batch.html', {'form': form})
+
+@role_required('admin')
+def batch_delete(request, batch_id):
+    batch = get_object_or_404(Batch, pk=batch_id)
+    if request.method == 'POST':
+        batch.delete()
+        return redirect('batch_list')
+    return render(request, 'pages/batch_list.html', {'batch': batch})
+
+@login_required
+def get_batch_students(request):
+    batch_id = request.GET.get('batch_id')
+    students = []
+    if batch_id:
+        try:
+            batch = Batch.objects.get(pk=batch_id)
+            students = [{'id': e.student.id, 'name': e.student.name} for e in batch.enrollments.all()]
+        except Batch.DoesNotExist:
+            students = []
+    return JsonResponse({'students': students})
+
+@login_required
+def get_batch_teachers(request):
+    batch_id = request.GET.get('batch_id')
+    teachers = []
+    if batch_id:
+        try:
+            batch = Batch.objects.get(pk=batch_id)
+            teachers = [{'id': batch.teacher.id, 'name': batch.teacher.name}] if batch.teacher else []
+        except Batch.DoesNotExist:
+            teachers = []
+    return JsonResponse({'teachers': teachers})
+
+def add_student(request):
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('student_list')
+    else:
+        form = StudentForm()
+
+    return render(request, 'pages/create_student.html', {'form': form})
+
+def batch_fee(request, batch_id):
+    batch = get_object_or_404(Batch, pk=batch_id)
+    return JsonResponse({
+        'fee': batch.fee,
+        'start_date': batch.start_date.isoformat(),
+        'end_date': batch.end_date.isoformat()
+    })
 
 def enrollment_create(request):
     if request.method == 'POST':
         form = EnrollmentForm(request.POST, user=request.user)
         if form.is_valid():
             enrollment = form.save()
-
             if enrollment.fee_type == 'installment':
-                # For installment-based enrollment → reset paid_amount at enrollment level
                 enrollment.paid_amount = 0
                 enrollment.save(update_fields=["paid_amount"])
-
-                # Generate installments
                 generate_installments(enrollment)
 
-            # Redirect based on role
             if getattr(request.user.profile, 'role', None) == 'student':
                 return redirect('student_dashboard')
             else:
@@ -664,7 +728,6 @@ def enrollment_list(request):
         )
     return render(request, 'pages/enrollment_list.html', {'enrollments': enrollments})
 
-
 @login_required
 def enrollment_edit(request, enrollment_id):
     if not (request.user.is_superuser or request.user.profile.role == 'admin'):
@@ -682,7 +745,6 @@ def enrollment_edit(request, enrollment_id):
 
     return render(request, 'pages/enrollments.html', {'form': form, 'enrollment': enrollment})
 
-
 @login_required
 def enrollment_delete(request, enrollment_id):
     if not (request.user.is_superuser or request.user.profile.role == 'admin'):
@@ -696,27 +758,6 @@ def enrollment_delete(request, enrollment_id):
 
     # Optional: show confirmation page (can also skip if using JS confirm)
     return render(request, 'pages/enrollments.html', {'enrollment': enrollment})
-
-
-
-def student_edit(request, pk):
-    student = get_object_or_404(Student, pk=pk)
-    if request.method == 'POST':
-        form = StudentForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            #messages.success(request, "Student updated successfully.")
-            return redirect('student_list')
-    else:
-        form = StudentForm(instance=student)
-    return render(request, 'pages/create_student.html', {'form': form})
-def student_delete(request, pk):
-    student = get_object_or_404(Student, pk=pk)
-    if request.method == "POST":
-        student.delete()
-       # messages.success(request, "Student deleted successfully.")
-        return redirect('student_list')
-    return render(request, 'students/student_confirm_delete.html', {'student': student})
 
 @login_required
 def send_lesson(request, lesson_id=None):
@@ -815,7 +856,6 @@ def lesson_list(request):
 
     return render(request, 'pages/lessons.html', {'form': form, 'lessons': lessons})
 
-
 def is_teacher_or_admin(user):
     return user.is_superuser or user.profile.role in ['teacher', 'admin']
 
@@ -830,14 +870,11 @@ def lesson_update(request, pk):
         if form.is_valid():
             lesson = form.save(commit=False)
             lesson.save()
-            # Save students from POST
             students_ids = request.POST.getlist('students')
             lesson.students.set(students_ids)
             return redirect('lesson_list')
     else:
         form = LessonForm(instance=lesson, user=request.user)
-
-    # Preselect students for the form
     selected_students = lesson.students.values_list('id', flat=True)
     form.fields['students'].initial = selected_students
 
@@ -845,8 +882,6 @@ def lesson_update(request, pk):
         'form': form,
         'lesson': lesson
     })
-
-
 
 @login_required
 @user_passes_test(is_teacher_or_admin)
@@ -857,370 +892,158 @@ def lesson_delete(request, pk):
         return redirect('lesson_list')
     return render(request, 'pages/lessons.html', {'lesson': lesson})
 
-
-@login_required
-def teacher_dashboard(request):
-    teacher = Teacher.objects.get(email=request.user.email)
-
-    # Batches taught by this teacher
-    batches = Batch.objects.filter(teacher=teacher).select_related('course')
-    total_batches_count = batches.count()
-
-    # Courses this teacher is teaching (via batches)
-    courses = Course.objects.filter(batches__teacher=teacher).distinct()
-    total_courses_count = courses.count()
-
-    # Unique students across teacher's batches
-    students = Student.objects.filter(
-        enrollments__batch__in=batches
-    ).distinct()
-    total_students_count = students.count()
-
-    # Lessons created by this teacher
-    recent_lessons = Lesson.objects.filter(teacher=teacher).order_by('-created_at')[:5]
-    total_lessons_count = Lesson.objects.filter(teacher=teacher).count()
-
-    # Enrollment stats per batch (for chart/table)
-    batch_stats = batches.annotate(
-        students_count=Count('enrollments')
-    ).order_by('-students_count')
-
-    context = {
-        "total_courses_count": total_courses_count,
-        "total_batches_count": total_batches_count,
-        "total_students_count": total_students_count,
-        "total_lessons_count": total_lessons_count,
-        "recent_lessons": recent_lessons,
-        "my_courses": courses,         # Courses taught by this teacher
-        "my_batches": batches,         # Batches taught by this teacher
-        "my_students": students,       # Unique students enrolled in their batches
-        "batch_stats": batch_stats,    # For showing chart or table
-    }
-    return render(request, "pages/teacher_dashboard.html", context)
-
-
-
-
-@login_required
-def get_batch_students(request):
-    batch_id = request.GET.get('batch_id')
-    students = []
-    if batch_id:
-        try:
-            batch = Batch.objects.get(pk=batch_id)
-            students = [{'id': e.student.id, 'name': e.student.name} for e in batch.enrollments.all()]
-        except Batch.DoesNotExist:
-            students = []
-    return JsonResponse({'students': students})
-
-
-@login_required
-def get_batch_teachers(request):
-    batch_id = request.GET.get('batch_id')
-    teachers = []
-    if batch_id:
-        try:
-            batch = Batch.objects.get(pk=batch_id)
-            teachers = [{'id': batch.teacher.id, 'name': batch.teacher.name}] if batch.teacher else []
-        except Batch.DoesNotExist:
-            teachers = []
-    return JsonResponse({'teachers': teachers})
-
-
-
 @role_required('admin')
-def create_batch(request):
-    if request.method == 'POST':
-        form = BatchForm(request.POST)
-        if form.is_valid():
-            batch = form.save()
-            return redirect('batch_list')
+def fee_management(request):
+    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
+        .prefetch_related('installments')
+
+    search = request.GET.get('search')
+    course_id = request.GET.get('course')
+    batch_id = request.GET.get('batch')
+    fee_type = request.GET.get('fee_type')
+    status = request.GET.get('status')
+
+    if search:
+        enrollments = enrollments.filter(
+            Q(student__name__icontains=search) |
+            Q(student__email__icontains=search)
+        )
+    if course_id:
+        enrollments = enrollments.filter(batch__course__id=course_id)
+    if batch_id:
+        enrollments = enrollments.filter(batch__id=batch_id)
+    if fee_type:
+        enrollments = enrollments.filter(fee_type=fee_type)
+
+    enrollments = list(enrollments)
+
+    for e in enrollments:
+        if e.fee_type == 'installment':
+            e.total_fee = sum(inst.amount for inst in e.installments.all())
+            e.paid_amount_display = sum(inst.paid_amount for inst in e.installments.all())
+            e.pending_amount_display = e.total_fee - e.paid_amount_display
         else:
-            print(form.errors)  # <--- print actual errors to debug
-    else:
-        form = BatchForm()
+            e.total_fee = e.fee_at_enrollment
+            e.paid_amount_display = e.paid_amount
+            e.pending_amount_display = e.pending_amount
 
-    return render(request, 'pages/create_batch.html', {'form': form})
+    if status == "paid":
+        enrollments = [e for e in enrollments if e.pending_amount_display == 0]
+    elif status == "partial":
+        enrollments = [e for e in enrollments if 0 < e.paid_amount_display < e.total_fee]
+    elif status == "pending":
+        enrollments = [e for e in enrollments if e.paid_amount_display == 0]
 
+    if request.method == 'POST':
+        enrollment_id = request.POST.get('enrollment_id')
+        enrollment = get_object_or_404(Enrollment, pk=enrollment_id)
+        form = EnrollmentFeeForm(request.POST, instance=enrollment)
+        if form.is_valid():
+            enrollment = form.save()
+            if enrollment.fee_type == 'installment':
+                generate_installments(enrollment)
+            return redirect('fee_management')
 
+    courses = Course.objects.all()
+    batches = Batch.objects.all()
 
-@role_required('admin')
-def batch_list(request):
-    batches = Batch.objects.select_related('course', 'teacher').order_by('course__title', 'number')
     context = {
+        'enrollments': enrollments,
+        'courses': courses,
         'batches': batches,
-        'today': timezone.now().date(),
     }
-    return render(request, 'pages/batch_list.html', context)
+    return render(request, 'pages/fee_management.html', context)
+
+def generate_installments(enrollment):
+    enrollment.installments.all().delete()
+    batch = enrollment.batch
+    start_date = batch.start_date
+    end_date = batch.end_date
+    months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) + 1
+
+    if months <= 1:
+        enrollment.installments.create(
+            due_date=start_date,
+            amount=enrollment.fee_at_enrollment,
+            paid_amount=0,
+            status='pending'
+        )
+    else:
+        installment_amount = enrollment.fee_at_enrollment
+        remainder = enrollment.fee_at_enrollment % months
+
+        for i in range(months):
+            installment_date = start_date + relativedelta(months=i)
+            amount = installment_amount + (remainder if i == months - 1 else 0)
+
+            enrollment.installments.create(
+                due_date=installment_date,
+                amount=amount,
+                paid_amount=0,
+                status='pending'
+            )
 
 @role_required('admin')
-def batch_edit(request, batch_id):
-    batch = get_object_or_404(Batch, pk=batch_id)
-    if request.method == 'POST':
-        form = BatchForm(request.POST, instance=batch)
-        if form.is_valid():
-            form.save()
-            #messages.success(request, "Batch updated successfully!")
-            return redirect('batch_list')
-    else:
-        form = BatchForm(instance=batch)
-    return render(request, 'pages/create_batch.html', {'form': form})
+def installments_list(request):
+    enrollments = Enrollment.objects.select_related('student', 'batch', 'batch__course') \
+        .prefetch_related(
+        Prefetch('installments', queryset=Installment.objects.order_by('due_date'))
+    )
 
-@role_required('admin')
-def batch_delete(request, batch_id):
-    batch = get_object_or_404(Batch, pk=batch_id)
-    if request.method == 'POST':
-        batch.delete()
-        #messages.success(request, "Batch deleted successfully!")
-        return redirect('batch_list')
-    return render(request, 'pages/batch_list.html', {'batch': batch})
+    search = request.GET.get('search')
+    course_id = request.GET.get('course')
+    batch_id = request.GET.get('batch')
+    fee_type = request.GET.get('fee_type')
+    status = request.GET.get('status')
 
-def buttons(request):
-    return render(request, 'buttons.html')
-
-def dropdowns(request):
-    return render(request, 'dropdowns.html')
-
-def typography(request):
-    return render(request, 'typography.html')
-
-def add_course(request):
-    if request.method == 'POST':
-        form = CourseForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('course_list')
-    else:
-        form = CourseForm()
-    return render(request, 'pages/add_course.html', {'form': form})
-
-def add_student(request):
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('student_list')
-    else:
-        form = StudentForm()  
-
-    return render(request, 'pages/create_student.html', {'form': form})
-
-
-def batch_fee(request, batch_id):
-    batch = get_object_or_404(Batch, pk=batch_id)
-    return JsonResponse({
-        'fee': batch.fee,
-        'start_date': batch.start_date.isoformat(),  # e.g., '2025-08-25'
-        'end_date': batch.end_date.isoformat()
-    })
-
-
-def charts(request):
-    return render(request, 'charts.html')
-
-def tables(request):
-    return render(request, 'tables.html')
-
-def blank_page(request):
-    return render(request, 'blank_page.html')
-
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        remember = request.POST.get('remember')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-
-            # If "Remember me" is NOT checked, session expires on browser close
-            if not remember:
-                request.session.set_expiry(0)
-
-           # messages.success(request, f"Welcome back, {user.username}!")
-            return redirect('home')
-        #redirect('dashboard')  # replace 'index' with your home/dashboard url
-        else:
-            #messages.error(request, "Invalid username or password.")
-            return redirect('login')
-
-    return render(request, 'pages/login.html')
- 
-from django.shortcuts import redirect
-
-def home_redirect(request):
-    if request.user.is_anonymous:
-        return redirect('login')
-
-    if request.user.is_superuser:
-        return redirect('admin_analytics')
-
-    role = getattr(request.user.profile, 'role', None)
-    if role == 'student':
-        return redirect('student_dashboard')
-    elif role == 'teacher':
-        return redirect('teacher_dashboard')
-    else:
-        return redirect('login')
-
-
-def register(request):
-    credentials = None
-
-    if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        age = request.POST.get("age")
-        phone_number = request.POST.get("phone_number")
-        date_of_birth = request.POST.get("date_of_birth")
-        password1 = request.POST.get("password1")
-        password2 = request.POST.get("password2")
-
-        if password1 != password2:
-            return redirect('register')
-
-        if User.objects.filter(email=email).exists():
-            return redirect('register')
-
-        # Create username from email
-        username = email.split('@')[0]
-
-        # Create User
-        user = User.objects.create_user(username=username, email=email, password=password1)
-
-        # Create Profile with role='student'
-        Profile.objects.create(
-            user=user,
-            full_name=name,
-            role='student'
+    if search:
+        enrollments = enrollments.filter(
+            Q(student__name__icontains=search) |
+            Q(student__email__icontains=search)
         )
 
-        # Optionally create Student record if you keep Student model
-        Student.objects.create(
-            user=user,
-            name=name,
-            age=age,
-            email=email,
-            phone_number=phone_number,
-            date_of_birth=date_of_birth,
-        )
+    if course_id:
+        enrollments = enrollments.filter(batch__course__id=course_id)
 
-        credentials = {'username': username, 'password': password1}
+    if batch_id:
+        enrollments = enrollments.filter(batch__id=batch_id)
 
-    return render(request, 'pages/register.html', {
-        'credentials': credentials
-    })
-def student_dashboard(request):
-    student = Student.objects.get(user=request.user)
+    if fee_type:
+        enrollments = enrollments.filter(fee_type=fee_type)
 
-    all_enrollments = Enrollment.objects.select_related(
-        'batch', 'batch__course', 'batch__teacher'
-    ).filter(student=student).order_by('-enrolled_on')
+    enrollments = [e for e in enrollments if e.installments.exists()]
 
-    completed_course_ids = all_enrollments.filter(status='completed')\
-                                         .values_list('batch__course_id', flat=True)
+    if status:
+        filtered_enrollments = []
+        for e in enrollments:
+            total_installments = sum(inst.amount for inst in e.installments.all())
+            paid_installments = sum(inst.paid_amount for inst in e.installments.all())
 
-    # Pending lessons are lessons in enrolled courses not yet completed by the student
-    pending_lessons_count = Lesson.objects.filter(
-        course__in=all_enrollments.values_list('batch__course', flat=True)
-    ).exclude(
-        students=student
-    ).count()
+            if status == 'paid' and paid_installments >= total_installments:
+                filtered_enrollments.append(e)
+            elif status == 'pending' and paid_installments == 0:
+                filtered_enrollments.append(e)
+            elif status == 'partial' and 0 < paid_installments < total_installments:
+                filtered_enrollments.append(e)
+        enrollments = filtered_enrollments
 
-    # Limit recent enrollments to last 5
-    my_enrollments = all_enrollments[:5]
-
-    batch_progress = []
-    for enrollment in my_enrollments:
-        total_lessons = Lesson.objects.filter(course=enrollment.batch.course).count()
-        completed_lessons = Lesson.objects.filter(
-            course=enrollment.batch.course,
-            students=student
-        ).count()
-
-        batch_progress.append({
-            'batch_number': enrollment.roll_number,
-            'course_title': enrollment.batch.course.title,
-            'status': enrollment.status.capitalize(),
-            'start_date': enrollment.batch.start_date,
-            'completed_lessons': completed_lessons,
-            'total_lessons': total_lessons,
-        })
+    courses = Course.objects.all()
+    batches = Batch.objects.all()
 
     context = {
-        'my_enrollments_count': all_enrollments.count(),
-        'completed_courses_count': all_enrollments.filter(status='completed').count(),
-        'pending_lessons_count': pending_lessons_count,
-        'my_recent_enrollments': my_enrollments,
-        'batch_progress': batch_progress,
+        'enrollments': enrollments,
+        'courses': courses,
+        'batches': batches,
+        'request': request,
     }
 
-    return render(request, 'pages/student_dashboard.html', context)
+    return render(request, 'pages/installments_list.html', context)
 
-
-
-
-
-def error_404(request):
-    return render(request, 'error_404.html')
-
-def error_500(request):
-    return render(request, 'error_500.html')
-
-def settings(request):
-    return render(request, 'settings.html')
-
-def tour(request):
-    return render(request, 'tour.html')
-
-def logout_view(request):
-    logout(request)
-    #messages.success(request, "You have been logged out successfully.")
-    return redirect('login')
-
-def search(request):
-    return render(request, 'search.html')
-
-def report_pdf(request):
-    return render(request, 'report_pdf.html')
-
-def report_excel(request):
-    return render(request, 'report_excel.html')
-
-def report_doc(request):
-    return render(request, 'report_doc.html')
-
-def view_project(request):
-    return render(request, 'view_project.html')
-
-def edit_project(request):
-    return render(request, 'edit_project.html')
-
-def language_ar(request):
-    return render(request, 'language_ar.html')
-
-def language_en(request):
-    return render(request, 'language_en.html')
-
-def inbox(request):
-    return render(request, 'inbox.html')
-
-def profile(request):
-    return render(request, 'profile.html')
-
-def lock_account(request):
-    return render(request, 'lock_account.html')
-
-def messages(request):
-    return render(request, 'messages.html')
-
-def message_detail(request):
-    return render(request, 'message_detail.html')
-
-def notifications(request):
-    return render(request, 'notifications.html')
-
-def notification_detail(request):
-    return render(request, 'notification_detail.html')
+def mark_installment_paid(request, installment_id):
+    installment = get_object_or_404(Installment, id=installment_id)
+    if request.method == 'POST':
+        installment.status = 'paid'
+        installment.paid_amount = installment.amount
+        installment.paid_date = timezone.now().date()
+        installment.save()
+    return redirect('installments_list')

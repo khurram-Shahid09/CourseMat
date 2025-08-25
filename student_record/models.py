@@ -23,8 +23,6 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.roll_number} - {self.name}"
 
-
-
 class Course(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=600)
@@ -57,7 +55,7 @@ class Batch(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("course", "number")  # prevent duplicate batch numbers per course
+        unique_together = ("course", "number")
 
     def clean(self):
         if self.course.batches.exclude(pk=self.pk).count() >= 3:
@@ -72,9 +70,6 @@ class Batch(models.Model):
 
     def __str__(self):
         return f"{self.batch_code} - {self.course.title} ({self.teacher.name})"
-
-
-
 
 class Enrollment(models.Model):
     FEE_TYPE_CHOICES = [
@@ -101,18 +96,15 @@ class Enrollment(models.Model):
 
     def clean(self):
         if self.student:
-            # Max 3 courses per student
             enrolled_courses = Enrollment.objects.filter(student=self.student).exclude(pk=self.pk).values_list(
                 "batch__course", flat=True
             ).distinct()
             if len(enrolled_courses) >= 3:
                 raise ValidationError(f"{self.student.name} is already enrolled in 3 courses.")
 
-            # Prevent duplicate enrollment in same course
             if Enrollment.objects.filter(student=self.student, batch__course=self.batch.course).exclude(pk=self.pk).exists():
                 raise ValidationError(f"{self.student.name} is already enrolled in {self.batch.course.title}.")
 
-            # Enforce batch capacity (10 students max)
             if self.batch.enrollments.exclude(pk=self.pk).count() >= 10:
                 raise ValidationError(f"Batch {self.batch.number} of {self.batch.course.title} is already full.")
 
@@ -135,17 +127,16 @@ class Enrollment(models.Model):
 
         super().save(*args, **kwargs)
 
-        # Auto-create installments if fee_type is 'installment'
         if self.fee_type == 'installment' and not self.installments.exists():
-            # Compute total months between start and end date
+
             start = self.batch.start_date
             end = self.batch.end_date
             total_months = (end.year - start.year) * 12 + (end.month - start.month)
 
-            # Only create installments if duration >= 1 month
             if total_months >= 1:
-                installment_amount = self.fee_at_enrollment // total_months
-                for i in range(total_months):
+              installment_amount = self.fee_at_enrollment 
+              for i in range(total_months):
+
                     due_date = start + relativedelta(months=i)
                     Installment.objects.create(
                         enrollment=self,
@@ -157,13 +148,8 @@ class Enrollment(models.Model):
 
     @property
     def pending_amount(self):
-        #if self.fee_type == 'installment':
-            # installments = self.installments.all()
-            # if installments.exists():
-            #     return sum(inst.amount - inst.paid_amount for inst in installments)
-            # fallback if installments not yet created
+
             return max(self.fee_at_enrollment - self.paid_amount, 0)
-       # return max(self.fee_at_enrollment - self.paid_amount, 0)
 
     @property
     def is_fully_paid(self):
@@ -173,7 +159,6 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.roll_number} - {self.student.name} in {self.batch.course.title} (Batch {self.batch.number})"
-
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher_profile',null=True,blank=True)
@@ -193,7 +178,6 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.teacher_code} - {self.name}"
-    
 
 class Lesson(models.Model):
     title = models.CharField(max_length=255)
@@ -209,7 +193,6 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.batch.batch_code})"
-
 
 class LessonImage(models.Model):
     lesson = models.ForeignKey(Lesson, related_name="images", on_delete=models.CASCADE)
