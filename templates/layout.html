@@ -1,48 +1,48 @@
 {% comment %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>{% block title %}Connect Plus{% endblock %}</title>
     <!-- plugins:css -->
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"
     />
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}"
     />
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}"
     />
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/select2/select2.min.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/select2/select2.min.css' %}"
     />
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}"
     />
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
-    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}"/>
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}"/>
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"
     />
     <link
-      rel="stylesheet"
-      href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}"
+            rel="stylesheet"
+            href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}"
+    />
+    <link
+            rel="stylesheet"
+            href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}"
     />
     <!-- endinject -->
     <!-- Plugin css for this page -->
@@ -50,693 +50,700 @@
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}"/>
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}"/>
     <!-- Extra CSS for child templates -->
     {% block extra_css %}{% endblock %}
-  </head>
-  <body>
-    <div class="container-scroller">
-      <!-- Navbar -->
-      <nav
-        class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row"
-      >
-       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      {% if request.user.profile.role == 'student' %}
-  <a class="navbar-brand brand-logo" href="{% url 'student_dashboard' %}"><h2>CourseMate</h2></a>
-  <a class="navbar-brand brand-logo-mini" href="{% url 'student_dashboard' %}"></a>
-{% elif request.user.profile.role == 'teacher' %}
-  <a class="navbar-brand brand-logo" href="{% url 'teacher_dashboard' %}"><h2>CourseMate</h2></a>
-  <a class="navbar-brand brand-logo-mini" href="{% url 'teacher_dashboard' %}"></a>
-{% else %}
-  <a class="navbar-brand brand-logo" href="{% url 'dashboard' %}"><h2>CourseMate</h2></a>
-  <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}"></a>
-{% endif %}
+</head>
+<body>
+<div class="container-scroller">
+    <!-- Navbar -->
+    <nav
+            class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row"
+    >
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+            {% if request.user.profile.role == 'student' %}
+            <a class="navbar-brand brand-logo" href="{% url 'student_dashboard' %}"><h2>CourseMate</h2></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'student_dashboard' %}"></a>
+            {% elif request.user.profile.role == 'teacher' %}
+            <a class="navbar-brand brand-logo" href="{% url 'teacher_dashboard' %}"><h2>CourseMate</h2></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'teacher_dashboard' %}"></a>
+            {% else %}
+            <a class="navbar-brand brand-logo" href="{% url 'dashboard' %}"><h2>CourseMate</h2></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}"></a>
+            {% endif %}
 
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
-          <button
-            class="navbar-toggler navbar-toggler align-self-center"
-            type="button"
-            data-toggle="minimize"
-          >
-            <span class="mdi mdi-menu"></span>
-          </button>
-          <div class="search-field d-none d-xl-block">
-            <form
-              class="d-flex align-items-center h-100"
-              action="{% url 'search' %}"
+            <button
+                    class="navbar-toggler navbar-toggler align-self-center"
+                    type="button"
+                    data-toggle="minimize"
             >
-              <div class="input-group">
-                <div class="input-group-prepend bg-transparent">
-                  <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                </div>
-                <input
-                  type="text"
-                  class="form-control bg-transparent border-0"
-                  placeholder="Search products"
-                  name="q"
-                />
-              </div>
-            </form>
-          </div>
-          <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item dropdown d-none d-md-block">
-              <a
-                class="nav-link dropdown-toggle"
-                id="reportDropdown"
-                href="#"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Reports
-              </a>
-              <div
-                class="dropdown-menu navbar-dropdown"
-                aria-labelledby="reportDropdown"
-              >
-                <a class="dropdown-item" href="{% url 'report_pdf' %}">
-                  <i class="mdi mdi-file-pdf mr-2"></i>PDF
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'report_excel' %}">
-                  <i class="mdi mdi-file-excel mr-2"></i>Excel
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'report_doc' %}">
-                  <i class="mdi mdi-file-word mr-2"></i>Doc
-                </a>
-              </div>
-            </li>
-            <li class="nav-item dropdown d-none d-md-block">
-              <a
-                class="nav-link dropdown-toggle"
-                id="projectDropdown"
-                href="#"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Projects
-              </a>
-              <div
-                class="dropdown-menu navbar-dropdown"
-                aria-labelledby="projectDropdown"
-              >
-                <a class="dropdown-item" href="{% url 'view_project' %}">
-                  <i class="mdi mdi-eye-outline mr-2"></i>View Project
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'edit_project' %}">
-                  <i class="mdi mdi-pencil-outline mr-2"></i>Edit Project
-                </a>
-              </div>
-            </li>
-            <li class="nav-item nav-language dropdown d-none d-md-block">
-              <a
-                class="nav-link dropdown-toggle"
-                id="languageDropdown"
-                href="#"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div class="nav-language-icon">
-                  <i class="flag-icon flag-icon-us" title="us" id="us"></i>
-                </div>
-                <div class="nav-language-text">
-                  <p class="mb-1 text-black">English</p>
-                </div>
-              </a>
-              <div
-                class="dropdown-menu navbar-dropdown"
-                aria-labelledby="languageDropdown"
-              >
-                <a class="dropdown-item" href="{% url 'language_ar' %}">
-                  <div class="nav-language-icon mr-2">
-                    <i class="flag-icon flag-icon-ae" title="ae" id="ae"></i>
-                  </div>
-                  <div class="nav-language-text">
-                    <p class="mb-1 text-black">Arabic</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'language_en' %}">
-                  <div class="nav-language-icon mr-2">
-                    <i class="flag-icon flag-icon-gb" title="GB" id="gb"></i>
-                  </div>
-                  <div class="nav-language-text">
-                    <p class="mb-1 text-black">English</p>
-                  </div>
-                </a>
-              </div>
-            </li>
-            <li class="nav-item nav-profile dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                id="profileDropdown"
-                href="#"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div class="nav-profile-img">
-                  <img
-                    src="{% static 'assets/images/faces/face28.png' %}"
-                    alt="image"
-                  />
-                </div>
-                <div class="nav-profile-text">
-                  <p class="mb-1 text-black">Henry Klein</p>
-                </div>
-              </a>
-              <div
-                class="dropdown-menu navbar-dropdown dropdown-menu-right p-0 border-0 font-size-sm"
-                aria-labelledby="profileDropdown"
-              >
-                <div class="p-3 text-center bg-primary">
-                  <img
-                    class="img-avatar img-avatar48 img-avatar-thumb"
-                    src="{% static 'assets/images/faces/face28.png' %}"
-                    alt=""
-                  />
-                </div>
-                <div class="p-2">
-                  <h5 class="dropdown-header text-uppercase pl-2 text-dark">
-                    User Options
-                  </h5>
-                  <a
-                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
-                    href="{% url 'inbox' %}"
-                  >
-                    <span>Inbox</span>
-                    <span class="p-0">
+                <span class="mdi mdi-menu"></span>
+            </button>
+            <div class="search-field d-none d-xl-block">
+                <form
+                        class="d-flex align-items-center h-100"
+                        action="{% url 'search' %}"
+                >
+                    <div class="input-group">
+                        <div class="input-group-prepend bg-transparent">
+                            <i class="input-group-text border-0 mdi mdi-magnify"></i>
+                        </div>
+                        <input
+                                type="text"
+                                class="form-control bg-transparent border-0"
+                                placeholder="Search products"
+                                name="q"
+                        />
+                    </div>
+                </form>
+            </div>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item dropdown d-none d-md-block">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            id="reportDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Reports
+                    </a>
+                    <div
+                            class="dropdown-menu navbar-dropdown"
+                            aria-labelledby="reportDropdown"
+                    >
+                        <a class="dropdown-item" href="{% url 'report_pdf' %}">
+                            <i class="mdi mdi-file-pdf mr-2"></i>PDF
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'report_excel' %}">
+                            <i class="mdi mdi-file-excel mr-2"></i>Excel
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'report_doc' %}">
+                            <i class="mdi mdi-file-word mr-2"></i>Doc
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown d-none d-md-block">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            id="projectDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Projects
+                    </a>
+                    <div
+                            class="dropdown-menu navbar-dropdown"
+                            aria-labelledby="projectDropdown"
+                    >
+                        <a class="dropdown-item" href="{% url 'view_project' %}">
+                            <i class="mdi mdi-eye-outline mr-2"></i>View Project
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'edit_project' %}">
+                            <i class="mdi mdi-pencil-outline mr-2"></i>Edit Project
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item nav-language dropdown d-none d-md-block">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            id="languageDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <div class="nav-language-icon">
+                            <i class="flag-icon flag-icon-us" title="us" id="us"></i>
+                        </div>
+                        <div class="nav-language-text">
+                            <p class="mb-1 text-black">English</p>
+                        </div>
+                    </a>
+                    <div
+                            class="dropdown-menu navbar-dropdown"
+                            aria-labelledby="languageDropdown"
+                    >
+                        <a class="dropdown-item" href="{% url 'language_ar' %}">
+                            <div class="nav-language-icon mr-2">
+                                <i class="flag-icon flag-icon-ae" title="ae" id="ae"></i>
+                            </div>
+                            <div class="nav-language-text">
+                                <p class="mb-1 text-black">Arabic</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'language_en' %}">
+                            <div class="nav-language-icon mr-2">
+                                <i class="flag-icon flag-icon-gb" title="GB" id="gb"></i>
+                            </div>
+                            <div class="nav-language-text">
+                                <p class="mb-1 text-black">English</p>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item nav-profile dropdown">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            id="profileDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <div class="nav-profile-img">
+                            <img
+                                    src="{% static 'assets/images/faces/face28.png' %}"
+                                    alt="image"
+                            />
+                        </div>
+                        <div class="nav-profile-text">
+                            <p class="mb-1 text-black">Henry Klein</p>
+                        </div>
+                    </a>
+                    <div
+                            class="dropdown-menu navbar-dropdown dropdown-menu-right p-0 border-0 font-size-sm"
+                            aria-labelledby="profileDropdown"
+                    >
+                        <div class="p-3 text-center bg-primary">
+                            <img
+                                    class="img-avatar img-avatar48 img-avatar-thumb"
+                                    src="{% static 'assets/images/faces/face28.png' %}"
+                                    alt=""
+                            />
+                        </div>
+                        <div class="p-2">
+                            <h5 class="dropdown-header text-uppercase pl-2 text-dark">
+                                User Options
+                            </h5>
+                            <a
+                                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
+                                    href="{% url 'inbox' %}"
+                            >
+                                <span>Inbox</span>
+                                <span class="p-0">
                       <span class="badge badge-primary">3</span>
                       <i class="mdi mdi-email-open-outline ml-1"></i>
                     </span>
-                  </a>
-                  <a
-                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
-                    href="{% url 'profile' %}"
-                  >
-                    <span>Profile</span>
-                    <span class="p-0">
+                            </a>
+                            <a
+                                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
+                                    href="{% url 'profile' %}"
+                            >
+                                <span>Profile</span>
+                                <span class="p-0">
                       <span class="badge badge-success">1</span>
                       <i class="mdi mdi-account-outline ml-1"></i>
                     </span>
-                  </a>
-                  <a
-                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
-                    href="{% url 'settings' %}"
-                  >
-                    <span>Settings</span>
-                    <i class="mdi mdi-settings"></i>
-                  </a>
-                  <div role="separator" class="dropdown-divider"></div>
-                  <h5
-                    class="dropdown-header text-uppercase pl-2 text-dark mt-2"
-                  >
-                    Actions
-                  </h5>
-                  <a
-                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
-                    href="{% url 'lock_account' %}"
-                  >
-                    <span>Lock Account</span>
-                    <i class="mdi mdi-lock ml-1"></i>
-                  </a>
-                  <a
-                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
-                    href="{% url 'logout' %}"
-                  >
-                    <span>Log Out</span>
-                    <i class="mdi mdi-logout ml-1"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link count-indicator dropdown-toggle"
-                id="messageDropdown"
-                href="#"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="mdi mdi-email-outline"></i>
-                <span class="count-symbol bg-success"></span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                aria-labelledby="messageDropdown"
-              >
-                <h6 class="p-3 mb-0 bg-primary text-white py-4">Messages</h6>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'message_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <img
-                      src="{% static 'assets/images/faces/face4.jpg' %}"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6
-                      class="preview-subject ellipsis mb-1 font-weight-normal"
-                    >
-                      Mark sent you a message
-                    </h6>
-                    <p class="text-gray mb-0">1 Minute ago</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'message_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <img
-                      src="{% static 'assets/images/faces/face2.jpg' %}"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6
-                      class="preview-subject ellipsis mb-1 font-weight-normal"
-                    >
-                      Cregh sent you a message
-                    </h6>
-                    <p class="text-gray mb-0">15 Minutes ago</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'message_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <img
-                      src="{% static 'assets/images/faces/face3.jpg' %}"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6
-                      class="preview-subject ellipsis mb-1 font-weight-normal"
-                    >
-                      Profile picture updated
-                    </h6>
-                    <p class="text-gray mb-0">18 Minutes ago</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <h6 class="p-3 mb-0 text-center">
-                  <a href="{% url 'messages' %}">4 new messages</a>
-                </h6>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link count-indicator dropdown-toggle"
-                id="notificationDropdown"
-                href="#"
-                data-toggle="dropdown"
-              >
-                <i class="mdi mdi-bell-outline"></i>
-                <span class="count-symbol bg-danger"></span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                aria-labelledby="notificationDropdown"
-              >
-                <h6 class="p-3 mb-0 bg-primary text-white py-4">
-                  Notifications
-                </h6>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'notification_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-success">
-                      <i class="mdi mdi-calendar"></i>
+                            </a>
+                            <a
+                                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
+                                    href="{% url 'settings' %}"
+                            >
+                                <span>Settings</span>
+                                <i class="mdi mdi-settings"></i>
+                            </a>
+                            <div role="separator" class="dropdown-divider"></div>
+                            <h5
+                                    class="dropdown-header text-uppercase pl-2 text-dark mt-2"
+                            >
+                                Actions
+                            </h5>
+                            <a
+                                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
+                                    href="{% url 'lock_account' %}"
+                            >
+                                <span>Lock Account</span>
+                                <i class="mdi mdi-lock ml-1"></i>
+                            </a>
+                            <a
+                                    class="dropdown-item py-1 d-flex align-items-center justify-content-between"
+                                    href="{% url 'logout' %}"
+                            >
+                                <span>Log Out</span>
+                                <i class="mdi mdi-logout ml-1"></i>
+                            </a>
+                        </div>
                     </div>
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6 class="preview-subject font-weight-normal mb-1">
-                      Event today
-                    </h6>
-                    <p class="text-gray ellipsis mb-0">
-                      Just a reminder that you have an event today
-                    </p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'notification_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-warning">
-                      <i class="mdi mdi-settings"></i>
+                </li>
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link count-indicator dropdown-toggle"
+                            id="messageDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <i class="mdi mdi-email-outline"></i>
+                        <span class="count-symbol bg-success"></span>
+                    </a>
+                    <div
+                            class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                            aria-labelledby="messageDropdown"
+                    >
+                        <h6 class="p-3 mb-0 bg-primary text-white py-4">Messages</h6>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'message_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <img
+                                        src="{% static 'assets/images/faces/face4.jpg' %}"
+                                        alt="image"
+                                        class="profile-pic"
+                                />
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6
+                                        class="preview-subject ellipsis mb-1 font-weight-normal"
+                                >
+                                    Mark sent you a message
+                                </h6>
+                                <p class="text-gray mb-0">1 Minute ago</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'message_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <img
+                                        src="{% static 'assets/images/faces/face2.jpg' %}"
+                                        alt="image"
+                                        class="profile-pic"
+                                />
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6
+                                        class="preview-subject ellipsis mb-1 font-weight-normal"
+                                >
+                                    Cregh sent you a message
+                                </h6>
+                                <p class="text-gray mb-0">15 Minutes ago</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'message_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <img
+                                        src="{% static 'assets/images/faces/face3.jpg' %}"
+                                        alt="image"
+                                        class="profile-pic"
+                                />
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6
+                                        class="preview-subject ellipsis mb-1 font-weight-normal"
+                                >
+                                    Profile picture updated
+                                </h6>
+                                <p class="text-gray mb-0">18 Minutes ago</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="p-3 mb-0 text-center">
+                            <a href="{% url 'messages' %}">4 new messages</a>
+                        </h6>
                     </div>
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6 class="preview-subject font-weight-normal mb-1">
-                      Settings
-                    </h6>
-                    <p class="text-gray ellipsis mb-0">Update dashboard</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a
-                  class="dropdown-item preview-item"
-                  href="{% url 'notification_detail' %}"
-                >
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-info">
-                      <i class="mdi mdi-link-variant"></i>
+                </li>
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link count-indicator dropdown-toggle"
+                            id="notificationDropdown"
+                            href="#"
+                            data-toggle="dropdown"
+                    >
+                        <i class="mdi mdi-bell-outline"></i>
+                        <span class="count-symbol bg-danger"></span>
+                    </a>
+                    <div
+                            class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                            aria-labelledby="notificationDropdown"
+                    >
+                        <h6 class="p-3 mb-0 bg-primary text-white py-4">
+                            Notifications
+                        </h6>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'notification_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-success">
+                                    <i class="mdi mdi-calendar"></i>
+                                </div>
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6 class="preview-subject font-weight-normal mb-1">
+                                    Event today
+                                </h6>
+                                <p class="text-gray ellipsis mb-0">
+                                    Just a reminder that you have an event today
+                                </p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'notification_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-warning">
+                                    <i class="mdi mdi-settings"></i>
+                                </div>
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6 class="preview-subject font-weight-normal mb-1">
+                                    Settings
+                                </h6>
+                                <p class="text-gray ellipsis mb-0">Update dashboard</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a
+                                class="dropdown-item preview-item"
+                                href="{% url 'notification_detail' %}"
+                        >
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-info">
+                                    <i class="mdi mdi-link-variant"></i>
+                                </div>
+                            </div>
+                            <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            >
+                                <h6 class="preview-subject font-weight-normal mb-1">
+                                    Launch Admin
+                                </h6>
+                                <p class="text-gray ellipsis mb-0">New admin wow!</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="p-3 mb-0 text-center">
+                            <a href="{% url 'notifications' %}">See all notifications</a>
+                        </h6>
                     </div>
-                  </div>
-                  <div
-                    class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-                  >
-                    <h6 class="preview-subject font-weight-normal mb-1">
-                      Launch Admin
-                    </h6>
-                    <p class="text-gray ellipsis mb-0">New admin wow!</p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <h6 class="p-3 mb-0 text-center">
-                  <a href="{% url 'notifications' %}">See all notifications</a>
-                </h6>
-              </div>
-            </li>
-          </ul>
-          <button
-            class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
-            type="button"
-            data-toggle="offcanvas"
-          >
-            <span class="mdi mdi-menu"></span>
-          </button>
+                </li>
+            </ul>
+            <button
+                    class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
+                    type="button"
+                    data-toggle="offcanvas"
+            >
+                <span class="mdi mdi-menu"></span>
+            </button>
         </div>
-      </nav>
-      <!-- Sidebar -->
-      <div class="container-fluid page-body-wrapper">
+    </nav>
+    <!-- Sidebar -->
+    <div class="container-fluid page-body-wrapper">
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item nav-category">Main</li>
+            <ul class="nav">
+                <li class="nav-item nav-category">Main</li>
 
-            <!-- Dashboard -->
-            <li class="nav-item">
-   <a class="nav-link" 
-   href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% if request.user.profile.role == 'student' %}{% url 'student_dashboard' %}
          {% elif request.user.profile.role == 'teacher' %}{% url 'teacher_dashboard' %}
          {% else %}{% url 'dashboard' %}{% endif %}">
     <span class="icon-bg">
         <i class="mdi mdi-view-dashboard menu-icon"></i>
     </span>
-    <span class="menu-title">Dashboard</span>
-</a>
+                        <span class="menu-title">Dashboard</span>
+                    </a>
 
-</li>
-  {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
-            <!-- Students Menu -->
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-toggle="collapse"
-                href="#students"
-                aria-expanded="false"
-                aria-controls="students"
-              >
+                </li>
+                {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+                <!-- Students Menu -->
+                <li class="nav-item">
+                    <a
+                            class="nav-link"
+                            data-toggle="collapse"
+                            href="#students"
+                            aria-expanded="false"
+                            aria-controls="students"
+                    >
                 <span class="icon-bg"
-                  ><i class="mdi mdi-account-multiple menu-icon"></i
+                ><i class="mdi mdi-account-multiple menu-icon"></i
                 ></span>
-                <span class="menu-title">Students</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="students">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'student_list' %}"
-                      >Student List</a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'basic_elements' %}"
-                      >Add Student</a
-                    >
-                  </li>
-                </ul>
-              </div>
-            </li>
+                        <span class="menu-title">Students</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="students">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'student_list' %}"
+                                >Student List</a
+                                >
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'basic_elements' %}"
+                                >Add Student</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-            <!-- Courses Menu -->
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-toggle="collapse"
-                href="#courses"
-                aria-expanded="false"
-                aria-controls="courses"
-              >
+                <!-- Courses Menu -->
+                <li class="nav-item">
+                    <a
+                            class="nav-link"
+                            data-toggle="collapse"
+                            href="#courses"
+                            aria-expanded="false"
+                            aria-controls="courses"
+                    >
                 <span class="icon-bg"
-                  ><i class="mdi mdi-book-open-page-variant menu-icon"></i
+                ><i class="mdi mdi-book-open-page-variant menu-icon"></i
                 ></span>
-                <span class="menu-title">Courses</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="courses">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'course_list' %}"
-                      >Course List</a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_course' %}"
-                      >Add Course</a
-                    >
-                  </li>
-                </ul>
-              </div>
-            </li>
-            {% endif %}
-            {% if request.user.profile.role in 'student teacher' %}
-<li class="nav-item">
-  <a class="nav-link" href="{% url 'course_list' %}">
-    <span class="icon-bg"><i class="mdi mdi-book-open-page-variant menu-icon"></i></span>
-    <span class="menu-title">Courses</span>
-  </a>
-</li>
-{% endif %}
-            <!-- Enrollments -->
-            {% if request.user.is_superuser or request.user.profile.role == 'admin' or request.user.profile.role == 'student' %}
-<li class="nav-item">
-  <a class="nav-link" data-toggle="collapse" href="#enrollments" 
-     aria-expanded="{% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}true{% else %}false{% endif %}" 
-     aria-controls="enrollments">
-    <span class="icon-bg"><i class="mdi mdi-school menu-icon"></i></span>
-    <span class="menu-title">Enrollments</span>
-    <i class="menu-arrow"></i>
-  </a>
-  <div class="collapse {% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}show{% endif %}" id="enrollments">
-    <ul class="nav flex-column sub-menu">
-      {% if request.user.is_superuser or request.user.profile.role == 'admin'   %}
-      <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'enrollment_list' %}active{% endif %}" href="{% url "enrollments" %}">All Enrollments</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'enrollment_create' %}">Add Enrollment</a>
-      </li>
-      {% endif %}
-      {% if request.user.profile.role == 'student' %}
-      <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'my_enrollments' %}active{% endif %}" href="{% url "enrollments" %}">My Enrollments</a>
-      </li>
-       <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}" href="{% url 'enrollment_create' %}">Add Enrollment</a>
-      </li>
-      {% endif %}
-    </ul>
-  </div>
-</li>
-{% endif %}
+                        <span class="menu-title">Courses</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="courses">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'course_list' %}"
+                                >Course List</a
+                                >
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'add_course' %}"
+                                >Add Course</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+                {% if request.user.profile.role in 'student teacher' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'course_list' %}">
+                        <span class="icon-bg"><i class="mdi mdi-book-open-page-variant menu-icon"></i></span>
+                        <span class="menu-title">Courses</span>
+                    </a>
+                </li>
+                {% endif %}
+                <!-- Enrollments -->
+                {% if request.user.is_superuser or request.user.profile.role == 'admin' or request.user.profile.role ==
+                'student' %}
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#enrollments"
+                       aria-expanded="{% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}true{% else %}false{% endif %}"
+                       aria-controls="enrollments">
+                        <span class="icon-bg"><i class="mdi mdi-school menu-icon"></i></span>
+                        <span class="menu-title">Enrollments</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse {% if request.resolver_match.url_name in 'enrollment_list enroll_student my_enrollments' %}show{% endif %}"
+                         id="enrollments">
+                        <ul class="nav flex-column sub-menu">
+                            {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'enrollment_list' %}active{% endif %}"
+                                   href="{% url " enrollments" %}">All Enrollments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}"
+                                   href="{% url 'enrollment_create' %}">Add Enrollment</a>
+                            </li>
+                            {% endif %}
+                            {% if request.user.profile.role == 'student' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'my_enrollments' %}active{% endif %}"
+                                   href="{% url " enrollments" %}">My Enrollments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'enroll_student' %}active{% endif %}"
+                                   href="{% url 'enrollment_create' %}">Add Enrollment</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
 
-            {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
-             <li class="nav-item">
-  <a
-    class="nav-link"
-    data-toggle="collapse"
-    href="#teachers"
-    aria-expanded="false"
-    aria-controls="teachers"
-  >
+                {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+                <li class="nav-item">
+                    <a
+                            class="nav-link"
+                            data-toggle="collapse"
+                            href="#teachers"
+                            aria-expanded="false"
+                            aria-controls="teachers"
+                    >
     <span class="icon-bg">
       <i class="mdi mdi-book-open-page-variant menu-icon"></i>
     </span>
-    <span class="menu-title">Teachers</span>
-    <i class="menu-arrow"></i>
-  </a>
-  <div class="collapse" id="teachers">
-    <ul class="nav flex-column sub-menu">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url "teacher_list" %}">Teacher List</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url "teacher_create" %}">Add Teacher</a>
-      </li>
-    </ul>
-  </div>
-</li>
- {% endif %}
+                        <span class="menu-title">Teachers</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="teachers">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url " teacher_list" %}">Teacher List</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url " teacher_create" %}">Add Teacher</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
 
-<li class="nav-item">
-  {% if request.user.profile.role == 'student' %}
-    <a class="nav-link" href="{% url 'lesson_list' %}">
+                <li class="nav-item">
+                    {% if request.user.profile.role == 'student' %}
+                    <a class="nav-link" href="{% url 'lesson_list' %}">
       <span class="icon-bg">
         <i class="mdi mdi-book-open-page-variant menu-icon"></i>
       </span>
-      <span class="menu-title">Lessons</span>
-    </a>
-  {% else %}
-    <a
-      class="nav-link"
-      data-toggle="collapse"
-      href="#lesson"
-      aria-expanded="{% if request.resolver_match.url_name in 'send-lesson lesson_list' %}true{% else %}false{% endif %}"
-      aria-controls="lesson"
-    >
+                        <span class="menu-title">Lessons</span>
+                    </a>
+                    {% else %}
+                    <a
+                            class="nav-link"
+                            data-toggle="collapse"
+                            href="#lesson"
+                            aria-expanded="{% if request.resolver_match.url_name in 'send-lesson lesson_list' %}true{% else %}false{% endif %}"
+                            aria-controls="lesson"
+                    >
       <span class="icon-bg">
         <i class="mdi mdi-book-open-page-variant menu-icon"></i>
       </span>
-      <span class="menu-title">Lessons</span>
-      <i class="menu-arrow"></i>
-    </a>
+                        <span class="menu-title">Lessons</span>
+                        <i class="menu-arrow"></i>
+                    </a>
 
-    <div class="collapse {% if request.resolver_match.url_name in 'send-lesson lesson_list' %}show{% endif %}" id="lesson">
-      <ul class="nav flex-column sub-menu">
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'send-lesson' %}active{% endif %}" href="{% url 'send-lesson' %}">
-            Send Lesson
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'lesson_list' %}active{% endif %}" href="{% url 'lesson_list' %}">
-            Lesson List
-          </a>
-        </li>
-      </ul>
-    </div>
-  {% endif %}
-</li>
+                    <div class="collapse {% if request.resolver_match.url_name in 'send-lesson lesson_list' %}show{% endif %}"
+                         id="lesson">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'send-lesson' %}active{% endif %}"
+                                   href="{% url 'send-lesson' %}">
+                                    Send Lesson
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'lesson_list' %}active{% endif %}"
+                                   href="{% url 'lesson_list' %}">
+                                    Lesson List
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </li>
 
 
-
-
-
-            <!-- Optional: User Pages -->
-            {% comment %} <li class="nav-item">
-              <a
-                class="nav-link"
-                data-toggle="collapse"
-                href="#auth"
-                aria-expanded="false"
-                aria-controls="auth"
-              >
+                <!-- Optional: User Pages -->
+                {% comment %}
+                <li class="nav-item">
+                    <a
+                            class="nav-link"
+                            data-toggle="collapse"
+                            href="#auth"
+                            aria-expanded="false"
+                            aria-controls="auth"
+                    >
                 <span class="icon-bg"
-                  ><i class="mdi mdi-lock menu-icon"></i
+                ><i class="mdi mdi-lock menu-icon"></i
                 ></span>
-                <span class="menu-title">User Pages</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'error_404' %}">404</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'error_500' %}">500</a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-          </ul> 
-        </nav> 
+                        <span class="menu-title">User Pages</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="auth">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'register' %}">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'error_404' %}">404</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'error_500' %}">500</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
 
         <!-- Main Content Area -->
         <div class="main-panel">
-          <div class="content-wrapper">{% block content %}{% endblock %}</div>
-          <!-- Footer -->
-          <footer class="footer">
-            <div
-              class="d-sm-flex justify-content-center justify-content-sm-between"
-            >
+            <div class="content-wrapper">{% block content %}{% endblock %}</div>
+            <!-- Footer -->
+            <footer class="footer">
+                <div
+                        class="d-sm-flex justify-content-center justify-content-sm-between"
+                >
               <span
-                class="text-muted text-center text-sm-left d-block d-sm-inline-block"
-                >Copyright © 2025. All rights reserved.</span
+                      class="text-muted text-center text-sm-left d-block d-sm-inline-block"
+              >Copyright © 2025. All rights reserved.</span
               >
-            </div>
-          </footer>
+                </div>
+            </footer>
         </div>
-      </div>
     </div>
-    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <!-- Plugin js for this page -->
-    <script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>
-    <script src="{% static 'assets/vendors/jquery-circle-progress/js/circle-progress.min.js' %}"></script>
-    <!-- inject:js -->
-    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
-    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
-    <script src="{% static 'assets/js/misc.js' %}"></script>
-    <!-- Custom js for this page -->
-    <script src="{% static 'assets/js/dashboard.js' %}"></script>
+</div>
+<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'assets/vendors/jquery-circle-progress/js/circle-progress.min.js' %}"></script>
+<!-- inject:js -->
+<script src="{% static 'assets/js/off-canvas.js' %}"></script>
+<script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'assets/js/misc.js' %}"></script>
+<!-- Custom js for this page -->
+<script src="{% static 'assets/js/dashboard.js' %}"></script>
 
-    <!-- plugins:js -->
-    {% comment %}
-    <script src="{% static 'assets/vendors/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <script src="{% static 'assets/vendors/bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
-    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
-    <!-- inject:js -->
-    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
-    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
-    <script src="{% static 'assets/js/misc.js' %}"></script>
-    <script src="{% static 'assets/js/file-upload.js' %}"></script>
-    <script src="{% static 'assets/js/typeahead.js' %}"></script>
-    <script src="{% static 'assets/js/select2.js' %}"></script>
-    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
-    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
-    <script src="{% static 'assets/js/misc.js' %}"></script>
-    
-    {% block extra_js %}{% endblock %}
-  </body>
+<!-- plugins:js -->
+{% comment %}
+<script src="{% static 'assets/vendors/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+<script src="{% static 'assets/vendors/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<!-- inject:js -->
+<script src="{% static 'assets/js/off-canvas.js' %}"></script>
+<script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'assets/js/misc.js' %}"></script>
+<script src="{% static 'assets/js/file-upload.js' %}"></script>
+<script src="{% static 'assets/js/typeahead.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="{% static 'assets/js/off-canvas.js' %}"></script>
+<script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'assets/js/misc.js' %}"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
 </html> {% endcomment %}

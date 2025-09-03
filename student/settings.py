@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-q+tf4xr#!+8@#hn1d40!oq$(o4(1nlp1_1s27ci&avhgv+m$_j
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.0.211',
+    '10.35.192.46',
     '127.0.0.1',
 ]
 
@@ -95,10 +95,15 @@ WSGI_APPLICATION = 'student.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'coursemat',
+        'USER': 'courseuser',
+        'PASSWORD': '123Ytrewq@',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

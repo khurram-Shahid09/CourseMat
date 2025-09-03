@@ -1,0 +1,2472 @@
+[
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$imhEBkBxyQzoQwrAGIetLR$IEcWiTPe2nAmMDlc6BJdZbxzDRDRvCey74r4ri1guKE=",
+      "last_login": "2025-09-02T11:02:32.513Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-08-20T19:54:10.564Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$d2eV6pFJmTLYMaegDUSEeK$tnECHpHiEYRvG3DGq45kZj+ycPE9AjsqXfpNThXdePs=",
+      "last_login": "2025-08-25T06:45:41.612Z",
+      "is_superuser": false,
+      "username": "ahmadraza",
+      "first_name": "",
+      "last_name": "",
+      "email": "ahmadraza@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-20T19:54:47.807Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$9s2eoGMbbwziekOVBXEObx$x+vUhf815rG9jKiYJyKdgfWTixRu4MeEov3ilaKjz+k=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "wajiid",
+      "first_name": "",
+      "last_name": "",
+      "email": "wajiid@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-20T19:55:25.663Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$wFJwBCSLIRWpIm1CsYk7Fg$cpxUs/dQS+3IVzl84O7g8X8cCvNqgXnehyYibFliHS0=",
+      "last_login": "2025-08-21T06:58:14.221Z",
+      "is_superuser": false,
+      "username": "ali",
+      "first_name": "",
+      "last_name": "",
+      "email": "ali@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T05:25:19.099Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$y1sD6ijGaM5Iqh8ujZm44P$5PfuW88HWuFFHvNHfr+LYGbiafeEaW6BZ1U9G6jseDo=",
+      "last_login": "2025-08-26T08:05:24.674Z",
+      "is_superuser": false,
+      "username": "hassan",
+      "first_name": "",
+      "last_name": "",
+      "email": "hassan@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T05:25:58.939Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$kIixbEUa5sdUCNUgGVgnT6$2uTvrPaDhFY9D73SqLImvlGoUg4TI7Gjs3WaW86ZGpI=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "asif",
+      "first_name": "",
+      "last_name": "",
+      "email": "asif@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:20:11.403Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$V6bFfPE1c2FxcqzSfbvf1j$slDb0vaHq6mf3VsMlmI/vaa7Fs+0fxifq+sdPTiP+qE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "faisal",
+      "first_name": "",
+      "last_name": "",
+      "email": "faisal@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:20:54.777Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$e2PwqGqcTHYSe2Q9cQLChE$gzGeuWZN157t0d7zwb8smk9QYjrnwKd1Ze2g976Qh+s=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "atif",
+      "first_name": "",
+      "last_name": "",
+      "email": "atif@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:21:45.589Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$3kqAbmeHWgekU1CqKm3WDL$x1RGt+x3hbd2UN6xtJCNYouOOypJo7HShtMpJ0gzzfI=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sohail",
+      "first_name": "",
+      "last_name": "",
+      "email": "sohail@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:22:11.940Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$wMPYRuU4moJ9QlrWmjbuiu$viyBossVWaMakF9fcaPkAHHd9aX1m2NP8x/4wi19fmM=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sajjad",
+      "first_name": "",
+      "last_name": "",
+      "email": "sajjad@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:22:41.637Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$JMrpFFL2nwtBb3IA7WEJFc$bOR14/88/ectBiBhZKBwAzeV2AQmAqCkT3zcbXbI2YE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "noman",
+      "first_name": "",
+      "last_name": "",
+      "email": "noman@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:23:09.710Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$kM3IYmGJM8OwDr9jdhqgSf$nS0enObLsO0cil6ny4vixSih5RAwrI9ac7vyPyDKfgE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "subhan",
+      "first_name": "",
+      "last_name": "",
+      "email": "subhan@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:23:32.253Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$ZBTcQ7bH7ITmHl6lJIaSmW$jsupEwAqPK1mzTFKkA7LreNIEE/qAlu7ioonR/hl7KU=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "Muzamil",
+      "first_name": "",
+      "last_name": "",
+      "email": "Muzamil@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:23:53.497Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$oJVdarCAlnhQNeYHGlCBhi$C5XyXk7/EFjGao1ToflXTAQke8dZBBapW4BoCdRcl88=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "imran",
+      "first_name": "",
+      "last_name": "",
+      "email": "imran@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:24:09.511Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$yh6pQesBhqQ9xtmZzPdZ8c$X8WLYJxQWipNTjCIze+uwngh+ihE5Hc9NtqYfq1s+Gw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "yahya",
+      "first_name": "",
+      "last_name": "",
+      "email": "yahya@gmai.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:24:39.526Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$aYk7Mqxw9MwSddBfC2RkOW$2YGhNQounQkh+oZtvHdqe4y5DwHqMS5LSqOtiMe1tCs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ayat",
+      "first_name": "",
+      "last_name": "",
+      "email": "ayat@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:25:37.901Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$hewgPUfBHscMoHKjRSRCja$lhp0N2MAEEIkIF/B4SU208lAse5LBC80a416oAqLoqE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "bilal",
+      "first_name": "",
+      "last_name": "",
+      "email": "bilal@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:28:58.944Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$39uOdobmEaglDrHSs69O8G$F/tjN1k+pVaBSsyICO9q/UhJ2F6wPH+MUZGNfo1+wkw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "omar",
+      "first_name": "",
+      "last_name": "",
+      "email": "omar@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-21T07:30:01.260Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$c8KVnvnsk4B8p23lZ6JiBH$ByFKCcSyQr9/uHbcphcfVqYqHXhEOI1ZudUre8ECQwQ=",
+      "last_login": "2025-08-26T07:37:52.469Z",
+      "is_superuser": false,
+      "username": "fakhar",
+      "first_name": "",
+      "last_name": "",
+      "email": "fakhar@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T07:37:23.041Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$6oBlfe8YgUjgBfALp1tYOK$y0UVTKUUCUWagI4tFWONQfscWzfbaRI3OeijiOYZP2M=",
+      "last_login": "2025-08-26T08:00:39.928Z",
+      "is_superuser": false,
+      "username": "amjad",
+      "first_name": "",
+      "last_name": "",
+      "email": "amjad@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T07:57:43.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$l9hgVpFOVu6960O9Dsq7im$3PE/huMXsQMIlPASpEgUNhTHss0oIVSoIn6xvQhe37w=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "hammad",
+      "first_name": "",
+      "last_name": "",
+      "email": "hammad@gmai.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T08:01:56.630Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$wedCjj9Hm0hOqXTfAv6oyV$gQFfz9jQSjHRWtRwP2pos1cwrRDacPu3DitzW89//Jw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "hammadd",
+      "first_name": "",
+      "last_name": "",
+      "email": "hammadd@gmai.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T08:02:16.068Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$R4Mubg8RfcB7hxWspEklij$nM5D0Ws3EW1qkTfomL/D5FlQ/0UOFvdeaCFu5KQTOjw=",
+      "last_login": "2025-08-26T08:05:05.880Z",
+      "is_superuser": false,
+      "username": "sana",
+      "first_name": "",
+      "last_name": "",
+      "email": "sana@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T08:02:48.176Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$VYUzBn0D8s47anbbZAl5dd$owuye5BUly/O0esphPvau/bh411VXRsXsTIaqCiCawM=",
+      "last_login": "2025-09-02T11:01:59.315Z",
+      "is_superuser": false,
+      "username": "zunais",
+      "first_name": "",
+      "last_name": "",
+      "email": "zunais@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T08:10:44.128Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$oNTyG1qBbrHjPinVWAZMfo$K7BixdsJRTXvRFACiQe7rMWU4sS/jvXRF118jXFJ5I0=",
+      "last_login": "2025-08-26T08:16:54.954Z",
+      "is_superuser": false,
+      "username": "imaran",
+      "first_name": "",
+      "last_name": "",
+      "email": "imaran@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T08:16:25.771Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$Vz2nvrnH66F9Rp6R1RCKCS$LHNswMD10tEfT/lb9sN1en+WAgLewdssmjiSubvtxdk=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "altaf",
+      "first_name": "",
+      "last_name": "",
+      "email": "altaf@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-26T13:15:32.618Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$vRwtTrOL1GXYFjYcUsaGnw$ox4N1dv1gMzfdBJry8L+/BaO0Let3FgvhdQgNvMUlKU=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "samad",
+      "first_name": "",
+      "last_name": "",
+      "email": "samad@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-27T05:22:10.709Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$Usyrfp2laknUu4gLuf8Wsf$d3nYvgpWamQvDuXOBwpuslCsbENi6gtk0m59y5jrT90=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "asim",
+      "first_name": "",
+      "last_name": "",
+      "email": "asim@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-27T05:56:22.719Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$LQH6FhbcPP71acs2zf9CLw$qxm4wBcGyCCRLkeQBiWxz6HhONmLB7cz9sy5AaJIN/c=",
+      "last_login": "2025-08-27T06:37:29.645Z",
+      "is_superuser": false,
+      "username": "adeel",
+      "first_name": "",
+      "last_name": "",
+      "email": "adeel@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-27T06:35:58.649Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "3xagpxz1p1kxf7v8fdh8ya4uirojxxdr",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uqp2x:ozS6bzSUi4p_P46yltLo5wv_Y7x2jqcfZatCZSEXSrg",
+      "expire_date": "2025-09-09T08:28:51.228Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "45xamemp9hmo61gnvzutbzr3b1fq48aq",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1utOmW:LDIr02zAK4uvbCWvqPbVFW8mNuVg7HucFmfDGOLEfo4",
+      "expire_date": "2025-09-16T11:02:32.528Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "7wxu746el3i7a5i80u6q9bodumar94y4",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1up4oE:NpQXJhlgFibtNWXOJ0yOD4aSo6AHNmVOAeXRN1rYu5Y",
+      "expire_date": "2025-09-04T12:54:26.816Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "8fj1h073ji4ha998xpb4hdrmab9mdxin",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uqnnm:zuBWKBQaak4jl10LmO-ImZH2k-dBUR78K2qKOFSFnog",
+      "expire_date": "2025-09-09T07:09:06.485Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "9qbe70dee3jq2vfhy7p3h1xtwx4rmtdp",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1upOk3:1795sdbya7qsV5VS4J24jxV-Ur7S1Y1GWzbdttDyLAI",
+      "expire_date": "2025-09-05T10:11:27.488Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "ai0ojlkxycxdvap9ju8i9lxdd9ykrk2i",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uqFq1:O_0-dIlqPzpuapCgjFuNba_Lm_RZw08kNgpYPwji5cA",
+      "expire_date": "2025-09-07T18:53:09.653Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "ckpy5jkfu3x793g6za8fr8ikdqz04nmh",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uqUoc:gMK26EIV_rJznDqqq1iNj7QZEhIUCDx1xViLodyZBw8",
+      "expire_date": "2025-09-08T10:52:42.671Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "ig4n7pkxf7d4srl6dx9ymgyxdvxobud4",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1ursJR:OhrQQQSfH-A_Q1Dz2zb3jrcqSIFnT29sPeOY3KHuBd0",
+      "expire_date": "2025-09-12T06:10:13.550Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "io2f8d7ql3jlebuwaftwx5tf1e8zagua",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uoot1:DNUmwIc__pUz7-mj9aYB_6uYqQ-wpaEERJ_KFGiuYQo",
+      "expire_date": "2025-09-03T19:54:19.948Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "jgoxk899y4g42k3rlyvm3tmf4pi0e5ib",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1up0WE:-d8SNmzFsY4QiBizdgNq4MBW1EhIleNYKN2EBqoZPBI",
+      "expire_date": "2025-09-04T08:19:34.600Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "n6ldcvogqmwqtfjj7tkzxfdldgpk9n0c",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1ur9nf:mzYS_iANDELMhafld_4-7Ka7esZcTAIrR3T0i6yNxRU",
+      "expire_date": "2025-09-10T06:38:27.538Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "pruro7r2dajs5axvcf4yxvuv4wo937h4",
+    "fields": {
+      "session_data": ".eJxVjEEOwiAQRe_C2pBShint0r1nIDBMLWrAlDbRGO-uTbrQ7X_vv5dwfl0mt1aeXYpiEEYcfrfg6cp5A_Hi87lIKnmZU5CbInda5alEvh139y8w-Tp93422qIIi8A0aJtRaQ9CoTDsCU9diZ0FZIhOs4b7vIwJ1KtgWQYPmcYtWrjWV7PhxT_NTDM37A0i1Pf8:1uozRQ:6jk7qz43CI7PdNGPw3n3fxdl5MDgSPWkMDQnpTTeq58",
+      "expire_date": "2025-09-04T07:10:32.969Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "xhodfcei6ih7z95ko9zg7cc5sb42i4aa",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1uqrZP:-DcVgIYpKadRTbmpDRT44StdiF3HkB0BuauieEr-yQM",
+      "expire_date": "2025-09-09T11:10:31.332Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "ykkisw8w7nlzqr4e7e4i1frr24nm50d1",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1upAPA:R77wrcVqk9liOtdL5QwcLYHV8GZjCfkimB2xIpQZ374",
+      "expire_date": "2025-09-04T18:52:56.164Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "zcqeaix4kbxrj2cnzc7nxtz5d4f087y1",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyFLV9rSo3e_gSywtagBA22iMf67bdKDniaZefPewtIyT3apXGwMYhBKHH47R_7GaRvCldIlS5_TXKKTGyL3tcpzDnw_7eyfYKI6rW-tPBOhQw0Q3HjU_ciq8QpaozSR6TQYNKaBNbqxQ4OEwKwCtx579Ju0cq0xJ8vPRywvMcDnC22TPnM:1urZjj:EPu1Mi9NnmfSGyoaVxoecg8V-aTmn6C4yuabUh70GNw",
+      "expire_date": "2025-09-11T10:20:07.978Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "zt0mgtplzilakxqq9j3u288ec8onbdde",
+    "fields": {
+      "session_data": ".eJxVjEEOwiAQRe_C2hDolJa6dO8ZyMwwWtSAKW2iMd5dm3Sh2__efy8VcJnHsFSZQopqrxqndr8jIV8lryReMJ-L5pLnKZFeFb3Rqo8lyu2wuX-BEev4fUsD5NGc2BtiFrZd762YdhAAoM4AeBgco1jkiNKLY4AGXaTWkWVao1VqTSUHedzT9FR78_4A2Y5AFQ:1uqorO:KMjbx5ykQJ_hJtGbvurM_5ovq6YqST8Wc6w8V3kq3XE",
+      "expire_date": "2025-09-09T08:16:54.933Z"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 1,
+    "fields": {
+      "user": ["ahmadraza"],
+      "name": "Ahmad Raza Akbar",
+      "age": 45,
+      "email": "ahmadraza@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-29",
+      "roll_number": "STU-01"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 2,
+    "fields": {
+      "user": ["ali"],
+      "name": "Ali",
+      "age": 43,
+      "email": "ali@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2012-01-29",
+      "roll_number": "STU-02"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 3,
+    "fields": {
+      "user": ["asif"],
+      "name": "Asif",
+      "age": 34,
+      "email": "asif@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-03-21",
+      "roll_number": "STU-03"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 4,
+    "fields": {
+      "user": ["faisal"],
+      "name": "Faisal",
+      "age": 67,
+      "email": "faisal@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-05-21",
+      "roll_number": "STU-04"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 5,
+    "fields": {
+      "user": ["atif"],
+      "name": "Atif",
+      "age": 34,
+      "email": "atif@gmail.com",
+      "phone_number": "303424344",
+      "date_of_birth": "2025-08-11",
+      "roll_number": "STU-05"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 6,
+    "fields": {
+      "user": ["sohail"],
+      "name": "Sohail",
+      "age": 66,
+      "email": "sohail@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-12",
+      "roll_number": "STU-06"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 7,
+    "fields": {
+      "user": ["sajjad"],
+      "name": "Sajjad",
+      "age": 77,
+      "email": "sajjad@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-27",
+      "roll_number": "STU-07"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 8,
+    "fields": {
+      "user": ["noman"],
+      "name": "Noman",
+      "age": 88,
+      "email": "noman@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-27",
+      "roll_number": "STU-08"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 9,
+    "fields": {
+      "user": ["subhan"],
+      "name": "Subhan",
+      "age": 88,
+      "email": "subhan@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-27",
+      "roll_number": "STU-09"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 10,
+    "fields": {
+      "user": ["Muzamil"],
+      "name": "Muzamil",
+      "age": 88,
+      "email": "Muzamil@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-27",
+      "roll_number": "STU-10"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 11,
+    "fields": {
+      "user": ["imran"],
+      "name": "Imran",
+      "age": 88,
+      "email": "imran@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-08-27",
+      "roll_number": "STU-11"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 12,
+    "fields": {
+      "user": ["yahya"],
+      "name": "Yayha",
+      "age": 33,
+      "email": "yahya@gmai.com",
+      "phone_number": "303424344",
+      "date_of_birth": "2025-08-07",
+      "roll_number": "STU-12"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 13,
+    "fields": {
+      "user": ["ayat"],
+      "name": "Ayat",
+      "age": 99,
+      "email": "ayat@gmail.com",
+      "phone_number": "03045726681",
+      "date_of_birth": "2025-03-19",
+      "roll_number": "STU-13"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 14,
+    "fields": {
+      "user": ["fakhar"],
+      "name": "Fakhar",
+      "age": 99,
+      "email": "fakhar@gmail.com",
+      "phone_number": "03045726689",
+      "date_of_birth": "2008-01-26",
+      "roll_number": "STU-14"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 15,
+    "fields": {
+      "user": ["altaf"],
+      "name": "Altaf Hussain",
+      "age": 190,
+      "email": "altaf@gmail.com",
+      "phone_number": "304522314",
+      "date_of_birth": "2025-08-03",
+      "roll_number": "STU-15"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 17,
+    "fields": {
+      "user": ["asim"],
+      "name": "Asim Khan",
+      "age": 20,
+      "email": "asim@example.com",
+      "phone_number": "03001234567",
+      "date_of_birth": "2005-02-10",
+      "roll_number": "STU-16"
+    }
+  },
+  {
+    "model": "student_record.student",
+    "pk": 18,
+    "fields": {
+      "user": ["adeel"],
+      "name": "Adeel",
+      "age": 20,
+      "email": "adeel@example.com",
+      "phone_number": "03001234567",
+      "date_of_birth": "2005-03-15",
+      "roll_number": "STU-18"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 2,
+    "fields": {
+      "title": "Flutter for Beginners",
+      "description": "Learn Flutter",
+      "duration": 10,
+      "level": "beginner",
+      "course_code": "CRS-01"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 3,
+    "fields": {
+      "title": "Introduction to Software Testing",
+      "description": "This course provides a solid foundation in software testing principles, tools, and practices. You will learn different testing types such as manual testing, unit testing, integration testing, system testing, and automation basics. The course also covers bug reporting, test case design, test-driven development (TDD), and best practices to ensure high-quality software. By the end, learners will be able to plan, design, and execute tests effectively to deliver reliable applications.",
+      "duration": 6,
+      "level": "intermediate",
+      "course_code": "CRS-03"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 4,
+    "fields": {
+      "title": "Foundations of Software Quality Assurance",
+      "description": "This course introduces the core concepts of software quality assurance and testing. Learners will explore testing strategies, defect tracking, automation frameworks, and quality metrics. Emphasis is placed on practical testing techniques, including writing effective test cases, applying black-box and white-box testing methods, and using modern testing tools. By the end of the course, participants will gain the skills to ensure software reliability, maintainability, and performance in real-world projects.",
+      "duration": 7,
+      "level": "intermediate",
+      "course_code": "CRS-04"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 5,
+    "fields": {
+      "title": "Python Programming for Beginners",
+      "description": "Learn the fundamentals of Python programming, from variables and loops to functions and data structures. This course equips you with the skills to write clean, efficient code and lays the foundation for web development, data analysis, and automation projects.",
+      "duration": 7,
+      "level": "beginner",
+      "course_code": "CRS-05"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 6,
+    "fields": {
+      "title": "Data Structures and Algorithms in Python",
+      "description": "Understand the core data structures and algorithmic techniques in Python. This course covers arrays, linked lists, stacks, queues, trees, sorting, and searching algorithms, preparing you for coding interviews and real-world problem solving.",
+      "duration": 4,
+      "level": "intermediate",
+      "course_code": "CRS-06"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 7,
+    "fields": {
+      "title": "Introduction to Machine Learning",
+      "description": "Explore the world of machine learning, from basic concepts to implementing predictive models. Topics include supervised and unsupervised learning, data preprocessing, model evaluation, and Python libraries like scikit-learn. Gain hands-on experience building intelligent systems.",
+      "duration": 6,
+      "level": "advanced",
+      "course_code": "CRS-07"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 9,
+    "fields": {
+      "title": "AI",
+      "description": "Learn AI, ML, Deep Learning etc",
+      "duration": 8,
+      "level": "advanced",
+      "course_code": "CRS-08"
+    }
+  },
+  {
+    "model": "student_record.course",
+    "pk": 10,
+    "fields": {
+      "title": "Django REST Framework (DRF) � Build APIs with Python",
+      "description": "This course teaches you how to build robust and scalable RESTful APIs using Django REST Framework (DRF). You will start with the basics of API development, including serialization, views, and URL routing, and progress to advanced topics like authentication, permissions, and token-based security. By the end of the course, you�ll be able to create fully functional APIs that can power web and mobile applications, integrating seamlessly with frontend frameworks like React, Angular, or Flutter.",
+      "duration": 7,
+      "level": "intermediate",
+      "course_code": "CRS-10"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 1,
+    "fields": {
+      "course": 2,
+      "teacher": 1,
+      "number": 1,
+      "start_date": "2025-08-29",
+      "end_date": "2025-09-27",
+      "fee": 50,
+      "batch_code": "CRS-01-B1",
+      "created_at": "2025-08-20T22:02:57.009Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 2,
+    "fields": {
+      "course": 4,
+      "teacher": 2,
+      "number": 1,
+      "start_date": "2025-08-20",
+      "end_date": "2025-08-31",
+      "fee": 500,
+      "batch_code": "CRS-04-B1",
+      "created_at": "2025-08-21T07:11:21.544Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 3,
+    "fields": {
+      "course": 4,
+      "teacher": 2,
+      "number": 2,
+      "start_date": "2025-08-25",
+      "end_date": "2025-08-31",
+      "fee": 700,
+      "batch_code": "CRS-04-B2",
+      "created_at": "2025-08-21T07:12:46.140Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 4,
+    "fields": {
+      "course": 5,
+      "teacher": 2,
+      "number": 1,
+      "start_date": "2025-08-29",
+      "end_date": "2025-10-29",
+      "fee": 1000,
+      "batch_code": "CRS-05-B1",
+      "created_at": "2025-08-21T07:31:24.970Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 5,
+    "fields": {
+      "course": 6,
+      "teacher": 1,
+      "number": 1,
+      "start_date": "2025-08-29",
+      "end_date": "2025-09-24",
+      "fee": 1999,
+      "batch_code": "CRS-06-B1",
+      "created_at": "2025-08-21T08:26:15.076Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 6,
+    "fields": {
+      "course": 2,
+      "teacher": 1,
+      "number": 2,
+      "start_date": "2025-08-05",
+      "end_date": "2025-10-29",
+      "fee": 67,
+      "batch_code": "CRS-01-B2",
+      "created_at": "2025-08-21T19:05:34.156Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 7,
+    "fields": {
+      "course": 6,
+      "teacher": 4,
+      "number": 3,
+      "start_date": "2025-08-29",
+      "end_date": "2025-10-30",
+      "fee": 999,
+      "batch_code": "CRS-06-B2",
+      "created_at": "2025-08-21T19:06:12.004Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 8,
+    "fields": {
+      "course": 4,
+      "teacher": 3,
+      "number": 3,
+      "start_date": "2025-08-23",
+      "end_date": "2025-11-28",
+      "fee": 5000,
+      "batch_code": "CRS-04-B3",
+      "created_at": "2025-08-22T11:37:54.317Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 9,
+    "fields": {
+      "course": 2,
+      "teacher": 2,
+      "number": 3,
+      "start_date": "2025-08-22",
+      "end_date": "2025-11-30",
+      "fee": 15000,
+      "batch_code": "CRS-01-B3",
+      "created_at": "2025-08-22T12:08:11.876Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 10,
+    "fields": {
+      "course": 9,
+      "teacher": 2,
+      "number": 1,
+      "start_date": "2025-08-25",
+      "end_date": "2025-12-31",
+      "fee": 100000,
+      "batch_code": "CRS-08-B1",
+      "created_at": "2025-08-24T18:58:55.357Z"
+    }
+  },
+  {
+    "model": "student_record.batch",
+    "pk": 11,
+    "fields": {
+      "course": 9,
+      "teacher": 1,
+      "number": 2,
+      "start_date": "2025-08-27",
+      "end_date": "2026-01-26",
+      "fee": 70000,
+      "batch_code": "CRS-08-B2",
+      "created_at": "2025-08-26T08:43:45.893Z"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 4,
+    "fields": {
+      "student": 1,
+      "batch": 1,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 50,
+      "paid_amount": 30,
+      "roll_number": "CRS-01-B1-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 5,
+    "fields": {
+      "student": 1,
+      "batch": 2,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 500,
+      "paid_amount": 199,
+      "roll_number": "CRS-04-B1-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 6,
+    "fields": {
+      "student": 2,
+      "batch": 3,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 700,
+      "paid_amount": 20,
+      "roll_number": "CRS-04-B2-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 7,
+    "fields": {
+      "student": 3,
+      "batch": 2,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 500,
+      "paid_amount": 0,
+      "roll_number": "CRS-04-B1-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 8,
+    "fields": {
+      "student": 1,
+      "batch": 4,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1000,
+      "paid_amount": 0,
+      "roll_number": "CRS-05-B1-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 9,
+    "fields": {
+      "student": 2,
+      "batch": 1,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 99,
+      "paid_amount": 0,
+      "roll_number": "CRS-01-B1-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 10,
+    "fields": {
+      "student": 7,
+      "batch": 4,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1000,
+      "paid_amount": 0,
+      "roll_number": "CRS-05-B1-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 11,
+    "fields": {
+      "student": 6,
+      "batch": 5,
+      "enrolled_on": "2025-08-21",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1999,
+      "paid_amount": 0,
+      "roll_number": "CRS-06-B1-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 12,
+    "fields": {
+      "student": 4,
+      "batch": 3,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 700,
+      "paid_amount": 200,
+      "roll_number": "CRS-04-B2-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 13,
+    "fields": {
+      "student": 9,
+      "batch": 1,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 50,
+      "paid_amount": 10,
+      "roll_number": "CRS-01-B1-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 14,
+    "fields": {
+      "student": 9,
+      "batch": 5,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1999,
+      "paid_amount": 1000,
+      "roll_number": "CRS-06-B1-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 15,
+    "fields": {
+      "student": 10,
+      "batch": 5,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1999,
+      "paid_amount": 1000,
+      "roll_number": "CRS-06-B1-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 16,
+    "fields": {
+      "student": 10,
+      "batch": 4,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 1000,
+      "paid_amount": 1000,
+      "roll_number": "CRS-05-B1-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 17,
+    "fields": {
+      "student": 13,
+      "batch": 1,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 50,
+      "paid_amount": 10,
+      "roll_number": "CRS-01-B1-0004"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 18,
+    "fields": {
+      "student": 13,
+      "batch": 3,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 700,
+      "paid_amount": 100,
+      "roll_number": "CRS-04-B2-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 19,
+    "fields": {
+      "student": 3,
+      "batch": 9,
+      "enrolled_on": "2025-08-22",
+      "status": "completed",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 15000,
+      "paid_amount": 200,
+      "roll_number": "CRS-01-B3-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 20,
+    "fields": {
+      "student": 11,
+      "batch": 9,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 15000,
+      "paid_amount": 1000,
+      "roll_number": "CRS-01-B3-0002"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 21,
+    "fields": {
+      "student": 11,
+      "batch": 2,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "one_time",
+      "fee_at_enrollment": 500,
+      "paid_amount": 1000,
+      "roll_number": "CRS-04-B1-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 22,
+    "fields": {
+      "student": 12,
+      "batch": 9,
+      "enrolled_on": "2025-08-22",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 15000,
+      "paid_amount": 1000,
+      "roll_number": "CRS-01-B3-0003"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 23,
+    "fields": {
+      "student": 9,
+      "batch": 2,
+      "enrolled_on": "2025-08-24",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 500,
+      "paid_amount": 0,
+      "roll_number": "CRS-04-B1-0004"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 24,
+    "fields": {
+      "student": 8,
+      "batch": 9,
+      "enrolled_on": "2025-08-24",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 15000,
+      "paid_amount": 1000,
+      "roll_number": "CRS-01-B3-0004"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 25,
+    "fields": {
+      "student": 10,
+      "batch": 10,
+      "enrolled_on": "2025-08-24",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 100000,
+      "paid_amount": 1000,
+      "roll_number": "CRS-08-B1-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 26,
+    "fields": {
+      "student": 5,
+      "batch": 6,
+      "enrolled_on": "2025-08-25",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 67,
+      "paid_amount": 0,
+      "roll_number": "CRS-01-B2-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 27,
+    "fields": {
+      "student": 12,
+      "batch": 11,
+      "enrolled_on": "2025-08-26",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 70000,
+      "paid_amount": 0,
+      "roll_number": "CRS-08-B2-0001"
+    }
+  },
+  {
+    "model": "student_record.enrollment",
+    "pk": 28,
+    "fields": {
+      "student": 7,
+      "batch": 11,
+      "enrolled_on": "2025-08-26",
+      "status": "enrolled",
+      "fee_type": "installment",
+      "fee_at_enrollment": 70000,
+      "paid_amount": 0,
+      "roll_number": "CRS-08-B2-0002"
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 1,
+    "fields": {
+      "user": ["wajiid"],
+      "name": "Sir Wajid",
+      "email": "wajiid@gmail.com",
+      "phone": "03045726681",
+      "specialization": "Full Stack",
+      "teacher_code": "TEA-01",
+      "courses": [2, 3]
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 2,
+    "fields": {
+      "user": ["hassan"],
+      "name": "Dr. Hassan",
+      "email": "hassan@gmail.com",
+      "phone": "303424344",
+      "specialization": "Software Engineer",
+      "teacher_code": "TEA-02",
+      "courses": [4, 5]
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 3,
+    "fields": {
+      "user": ["bilal"],
+      "name": "Bilal Ahmed",
+      "email": "bilal@gmail.com",
+      "phone": "303424344",
+      "specialization": "Web Development (Django & Flask)",
+      "teacher_code": "TEA-03",
+      "courses": [5, 6]
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 4,
+    "fields": {
+      "user": ["omar"],
+      "name": "Omar Farooq",
+      "email": "omar@gmail.com",
+      "phone": "03045726681",
+      "specialization": "Flutter & Mobile App Development",
+      "teacher_code": "TEA-04",
+      "courses": [3]
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 6,
+    "fields": {
+      "user": ["zunais"],
+      "name": "Zunaish",
+      "email": "zunais@gmail.com",
+      "phone": "303424344",
+      "specialization": "Full Stack",
+      "teacher_code": "TEA-05",
+      "courses": [3, 4]
+    }
+  },
+  {
+    "model": "student_record.teacher",
+    "pk": 7,
+    "fields": {
+      "user": ["imaran"],
+      "name": "imran",
+      "email": "imaran@gmail.com",
+      "phone": "03045726689",
+      "specialization": "Web Development (Django & Flask)",
+      "teacher_code": "TEA-07",
+      "courses": [9]
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 1,
+    "fields": {
+      "title": "Flutter for Beginners",
+      "content": "dfdafd",
+      "teacher": null,
+      "course": null,
+      "batch": 1,
+      "created_at": "2025-08-21T07:08:58.778Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 3,
+    "fields": {
+      "title": "Lesson 1: Introduction to Software Quality Assurance",
+      "content": "Understand the role of QA in software development. Learn about the importance of software quality, QA vs. testing, and the software development lifecycle (SDLC).",
+      "teacher": 2,
+      "course": null,
+      "batch": 2,
+      "created_at": "2025-08-21T07:38:50.887Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 4,
+    "fields": {
+      "title": "Lesson 2: Fundamentals of Software Testing",
+      "content": "Explore the basics of software testing, including testing objectives, types of testing (manual, automated, unit, integration, system), and the testing process.",
+      "teacher": 2,
+      "course": null,
+      "batch": 2,
+      "created_at": "2025-08-21T07:41:53.985Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 5,
+    "fields": {
+      "title": "Lesson 3: Test Planning and Design",
+      "content": "Learn how to create effective test plans and test cases. Topics include test strategies, test design techniques, and defining test objectives.",
+      "teacher": 2,
+      "course": null,
+      "batch": 2,
+      "created_at": "2025-08-21T07:42:35.308Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 6,
+    "fields": {
+      "title": "Lesson 4: Defect Management",
+      "content": "Understand bug tracking and reporting, the defect life cycle, and tools used to manage software defects efficiently.",
+      "teacher": 2,
+      "course": null,
+      "batch": 2,
+      "created_at": "2025-08-21T07:43:50.952Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 7,
+    "fields": {
+      "title": "Lesson 5: Testing Tools and Automation Basics",
+      "content": "Introduction to testing tools and frameworks. Learn automation basics, popular tools (like Selenium), and when to apply automation versus manual testing.",
+      "teacher": 2,
+      "course": null,
+      "batch": 3,
+      "created_at": "2025-08-21T07:44:25.418Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 8,
+    "fields": {
+      "title": "Flutter for Beginners",
+      "content": "Learn Widgets",
+      "teacher": 2,
+      "course": null,
+      "batch": 9,
+      "created_at": "2025-08-25T08:24:54.309Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 9,
+    "fields": {
+      "title": "DRF (Django REST Framework)",
+      "content": "DRF test",
+      "teacher": 1,
+      "course": 9,
+      "batch": 1,
+      "created_at": "2025-08-26T10:49:03.341Z",
+      "students": []
+    }
+  },
+  {
+    "model": "student_record.lesson",
+    "pk": 10,
+    "fields": {
+      "title": "DRF (Django REST Framework)",
+      "content": "DRF test",
+      "teacher": 1,
+      "course": 9,
+      "batch": 1,
+      "created_at": "2025-08-26T10:53:22.108Z",
+      "students": [4]
+    }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 1,
+    "fields": {
+      "lesson": 3,
+      "image": "lesson_images/Introduction_to_Django_Web_Development_HC4bNgV.png"
+    }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 2,
+    "fields": {
+      "lesson": 4,
+      "image": "lesson_images/ChatGPT_Image_Aug_20_2025_05_01_32_PM_CqHRnHf.png"
+    }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 3,
+    "fields": { "lesson": 5, "image": "lesson_images/image.png" }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 4,
+    "fields": {
+      "lesson": 6,
+      "image": "lesson_images/Introduction_to_Django_Web_Development_9n4hTw1.png"
+    }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 5,
+    "fields": {
+      "lesson": 7,
+      "image": "lesson_images/ChatGPT_Image_Aug_20_2025_05_01_32_PM_L98pS7f.png"
+    }
+  },
+  {
+    "model": "student_record.lessonimage",
+    "pk": 6,
+    "fields": {
+      "lesson": 8,
+      "image": "lesson_images/ChatGPT_Image_Aug_20_2025_05_01_32_PM_W1mUiXA.png"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 1,
+    "fields": {
+      "user": ["ahmadraza"],
+      "role": "student",
+      "full_name": "Ahmad Raza Akbar"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 2,
+    "fields": {
+      "user": ["wajiid"],
+      "role": "teacher",
+      "full_name": "Sir Wajid"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 3,
+    "fields": {
+      "user": ["admin"],
+      "role": "admin",
+      "full_name": "Mr. Khurram Shahid"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 4,
+    "fields": { "user": ["ali"], "role": "student", "full_name": "Ali" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 5,
+    "fields": {
+      "user": ["hassan"],
+      "role": "teacher",
+      "full_name": "Dr. Hassan"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 6,
+    "fields": { "user": ["asif"], "role": "student", "full_name": "Asif" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 7,
+    "fields": { "user": ["faisal"], "role": "student", "full_name": "Faisal" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 8,
+    "fields": { "user": ["atif"], "role": "student", "full_name": "Atif" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 9,
+    "fields": { "user": ["sohail"], "role": "student", "full_name": "Sohail" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 10,
+    "fields": { "user": ["sajjad"], "role": "student", "full_name": "Sajjad" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 11,
+    "fields": { "user": ["noman"], "role": "student", "full_name": "Noman" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 12,
+    "fields": { "user": ["subhan"], "role": "student", "full_name": "Subhan" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 13,
+    "fields": { "user": ["Muzamil"], "role": "student", "full_name": "Muzamil" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 14,
+    "fields": { "user": ["imran"], "role": "student", "full_name": "Imran" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 15,
+    "fields": { "user": ["yahya"], "role": "student", "full_name": "Yayha" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 16,
+    "fields": { "user": ["ayat"], "role": "student", "full_name": "Ayat" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 17,
+    "fields": {
+      "user": ["bilal"],
+      "role": "teacher",
+      "full_name": "Bilal Ahmed"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 18,
+    "fields": {
+      "user": ["omar"],
+      "role": "teacher",
+      "full_name": "Omar Farooq"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 19,
+    "fields": { "user": ["fakhar"], "role": "student", "full_name": "Fakhar" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 20,
+    "fields": { "user": ["amjad"], "role": "teacher", "full_name": "Sir Amjad" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 21,
+    "fields": { "user": ["hammad"], "role": "teacher", "full_name": "Hammad" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 22,
+    "fields": { "user": ["hammadd"], "role": "teacher", "full_name": "Hammad" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 23,
+    "fields": { "user": ["sana"], "role": "teacher", "full_name": "sana" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 24,
+    "fields": { "user": ["zunais"], "role": "teacher", "full_name": "Zunaish" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 25,
+    "fields": { "user": ["imaran"], "role": "teacher", "full_name": "imran" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 26,
+    "fields": {
+      "user": ["altaf"],
+      "role": "student",
+      "full_name": "Altaf Hussain"
+    }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 27,
+    "fields": { "user": ["samad"], "role": "student", "full_name": "Samad" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 28,
+    "fields": { "user": ["asim"], "role": "student", "full_name": "Asim Khan" }
+  },
+  {
+    "model": "student_record.profile",
+    "pk": 29,
+    "fields": { "user": ["adeel"], "role": "student", "full_name": "Adeel" }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 4,
+    "fields": {
+      "enrollment": 22,
+      "due_date": "2025-08-22",
+      "amount": 3750,
+      "paid_amount": 3750,
+      "status": "paid",
+      "paid_date": "2025-08-25"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 5,
+    "fields": {
+      "enrollment": 22,
+      "due_date": "2025-09-22",
+      "amount": 3750,
+      "paid_amount": 3750,
+      "status": "paid",
+      "paid_date": "2025-08-28"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 6,
+    "fields": {
+      "enrollment": 22,
+      "due_date": "2025-10-22",
+      "amount": 3750,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 7,
+    "fields": {
+      "enrollment": 22,
+      "due_date": "2025-11-22",
+      "amount": 3750,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 8,
+    "fields": {
+      "enrollment": 23,
+      "due_date": "2025-08-20",
+      "amount": 500,
+      "paid_amount": 500,
+      "status": "paid",
+      "paid_date": "2025-08-25"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 12,
+    "fields": {
+      "enrollment": 24,
+      "due_date": "2025-08-22",
+      "amount": 3750,
+      "paid_amount": 3750,
+      "status": "paid",
+      "paid_date": "2025-08-28"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 13,
+    "fields": {
+      "enrollment": 24,
+      "due_date": "2025-09-22",
+      "amount": 3750,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 14,
+    "fields": {
+      "enrollment": 24,
+      "due_date": "2025-10-22",
+      "amount": 3750,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 15,
+    "fields": {
+      "enrollment": 24,
+      "due_date": "2025-11-22",
+      "amount": 3750,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 20,
+    "fields": {
+      "enrollment": 25,
+      "due_date": "2025-08-25",
+      "amount": 20000,
+      "paid_amount": 20000,
+      "status": "paid",
+      "paid_date": "2025-08-25"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 21,
+    "fields": {
+      "enrollment": 25,
+      "due_date": "2025-09-25",
+      "amount": 20000,
+      "paid_amount": 20000,
+      "status": "paid",
+      "paid_date": "2025-08-25"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 22,
+    "fields": {
+      "enrollment": 25,
+      "due_date": "2025-10-25",
+      "amount": 20000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 23,
+    "fields": {
+      "enrollment": 25,
+      "due_date": "2025-11-25",
+      "amount": 20000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 24,
+    "fields": {
+      "enrollment": 25,
+      "due_date": "2025-12-25",
+      "amount": 20000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 27,
+    "fields": {
+      "enrollment": 26,
+      "due_date": "2025-08-05",
+      "amount": 22,
+      "paid_amount": 22,
+      "status": "paid",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 28,
+    "fields": {
+      "enrollment": 26,
+      "due_date": "2025-09-05",
+      "amount": 22,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 29,
+    "fields": {
+      "enrollment": 26,
+      "due_date": "2025-10-05",
+      "amount": 23,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 30,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-08-27",
+      "amount": 70000,
+      "paid_amount": 70000,
+      "status": "paid",
+      "paid_date": "2025-08-28"
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 31,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-09-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 32,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-10-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 33,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-11-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 34,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-12-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 35,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-08-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 36,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-09-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 37,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-10-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 38,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-11-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 39,
+    "fields": {
+      "enrollment": 27,
+      "due_date": "2025-12-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 40,
+    "fields": {
+      "enrollment": 28,
+      "due_date": "2025-08-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 41,
+    "fields": {
+      "enrollment": 28,
+      "due_date": "2025-09-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 42,
+    "fields": {
+      "enrollment": 28,
+      "due_date": "2025-10-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 43,
+    "fields": {
+      "enrollment": 28,
+      "due_date": "2025-11-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "student_record.installment",
+    "pk": 44,
+    "fields": {
+      "enrollment": 28,
+      "due_date": "2025-12-27",
+      "amount": 70000,
+      "paid_amount": 0,
+      "status": "pending",
+      "paid_date": null
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "8b8d654e3edf2bbdb8c1648166fb93c76767a912",
+    "fields": { "user": ["admin"], "created": "2025-08-27T06:20:34.947Z" }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2025-08-20T20:42:11.914Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "profile"],
+      "object_id": "3",
+      "object_repr": "admin - admin",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2025-08-22T12:22:10.416Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "82",
+      "object_repr": "Installment object (82)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+      "action_time": "2025-08-22T12:22:13.277Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "78",
+      "object_repr": "Installment object (78)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+      "action_time": "2025-08-22T12:22:15.632Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "77",
+      "object_repr": "Installment object (77)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+      "action_time": "2025-08-22T12:22:18.550Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "76",
+      "object_repr": "Installment object (76)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+      "action_time": "2025-08-22T12:22:21.130Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "72",
+      "object_repr": "Installment object (72)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+      "action_time": "2025-08-22T12:22:23.280Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "71",
+      "object_repr": "Installment object (71)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+      "action_time": "2025-08-22T12:22:25.646Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "70",
+      "object_repr": "Installment object (70)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+      "action_time": "2025-08-22T12:22:28.440Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "63",
+      "object_repr": "Installment object (63)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+      "action_time": "2025-08-22T12:22:31.341Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "62",
+      "object_repr": "Installment object (62)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+      "action_time": "2025-08-22T12:22:33.995Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "61",
+      "object_repr": "Installment object (61)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+      "action_time": "2025-08-22T12:22:36.543Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "18",
+      "object_repr": "Installment object (18)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+      "action_time": "2025-08-22T12:22:39.308Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "17",
+      "object_repr": "Installment object (17)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+      "action_time": "2025-08-22T12:22:41.919Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "16",
+      "object_repr": "Installment object (16)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+      "action_time": "2025-08-22T12:22:46.204Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "3",
+      "object_repr": "Installment object (3)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+      "action_time": "2025-08-22T12:22:49.078Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "2",
+      "object_repr": "Installment object (2)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+      "action_time": "2025-08-22T12:22:52.524Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "installment"],
+      "object_id": "1",
+      "object_repr": "Installment object (1)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+      "action_time": "2025-08-26T08:13:18.036Z",
+      "user": ["admin"],
+      "content_type": ["student_record", "teacher"],
+      "object_id": "6",
+      "object_repr": "TEA-05 - Zunaish",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Email\"]}}]"
+    }
+  }
+]
